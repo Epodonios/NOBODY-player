@@ -1,0 +1,58 @@
+# NOBODY Setup — electron-builder configuration (MEMENTO-style).
+#
+# Ships as a single portable exe (NOBODYSetup-<version>.exe): the wizard AND
+# the NOBODY payload in one file. The wizard clones its OWN Electron runtime
+# into the destination (runtime-reuse — the payload carries only app code),
+# which is why this file pins electron 41.7.1: EXACTLY the runtime NOBODY
+# itself ships. Setup and app must never drift.
+appId: com.epodonios.nobody.setup
+productName: NOBODYSetup
+copyright: © 2026 EPODONIOS
+
+directories:
+  output: release
+  buildResources: build
+
+compression: maximum
+
+files:
+  - dist/**
+  - dist-electron/**
+  - payload-meta.json
+  - payload-manifest.json
+  - package.json
+
+asar: true
+
+# The payload (app code) must sit OUTSIDE the asar so the installer can copy
+# it byte-for-byte at install time.
+extraResources:
+  - from: payload
+    to: payload
+    filter:
+      - "**/*"
+  - from: build/icon.png
+    to: icon.png
+
+win:
+  target:
+    - target: portable
+      arch:
+        - x64
+  icon: build/icon.png
+  # Chromium locale .paks the app never shows (all UI text ships inside the
+  # renderer/app.asar) — trimming them saves ~48 MB per runtime copy. The
+  # installed NOBODY inherits this same runtime, which is fine: NOBODY's own
+  # i18n (fa/en/tr/ru) lives in the app bundle, not in Chromium's paks.
+  electronLanguages:
+    - en-US
+  # No signing certificate for this project — electron-builder then applies
+  # icon + version resources natively (its own PE editor, no wine).
+  signExecutable: false
+
+portable:
+  artifactName: NOBODY-Setup-${version}.${ext}
+  # One UAC prompt at launch (MEMENTO 2.0.3 contract): the wizard then can
+  # honour BOTH scopes for real — "all users" writes %ProgramFiles% + HKLM,
+  # "just me" writes %LOCALAPPDATA%\Programs + HKCU.
+  requestExecutionLevel: admin

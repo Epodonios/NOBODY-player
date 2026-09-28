@@ -1,0 +1,923 @@
+@import "tailwindcss";
+@import "./generated/fonts.css";
+
+/* ---------------------------------------------------------------------------
+   NOBODY Installer Suite — V2 tokens (modern pass).
+   Mirrors build/installer-assets/tokens.json 1:1. Do not fork these numbers:
+   the installer and the app must sample the same two colours out of the icon.
+   V2 adds: a third accent (coral) for the primary gradient, layered surface
+   colours, and a real radius scale — the V1 square edges read as 2012.
+--------------------------------------------------------------------------- */
+@theme {
+  --color-nb-bg: #08070b;
+  --color-nb-bg2: #0e0c13;
+  --color-nb-surface: #14111b;
+  --color-nb-surface2: #1a1624;
+  --color-nb-ink: #f6f4f8;
+  --color-nb-muted: #a9a3b4;
+  --color-nb-dim: #6c6578;
+  --color-nb-hair: #1e1a26;
+  --color-nb-a1: #ff2d78;
+  --color-nb-a2: #ff9ec4;
+  --color-nb-a3: #ff7a4d;
+
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, sans-serif;
+  --font-ui: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-fa: "Vazirmatn", "Inter", ui-sans-serif, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --ease-nb: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-nb-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-nb-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background: #040306;
+    color: var(--color-nb-ink);
+    font-family: var(--font-ui);
+    overflow: hidden;
+    cursor: default;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  button,
+  input {
+    font: inherit;
+    color: inherit;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-nb-a1) 45%, transparent);
+  }
+}
+
+/* ==========================================================================
+   SURFACES — the V2 look: soft geometry, layered translucency, one gradient
+   ========================================================================== */
+.nb-glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.nb-card {
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012));
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 18px 40px -26px rgba(0, 0, 0, 0.95);
+}
+.nb-card-quiet {
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.022);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+}
+.nb-grad {
+  background: linear-gradient(135deg, #ff2d78 0%, #ff7a4d 100%);
+}
+.nb-grad-soft {
+  background: linear-gradient(135deg, rgba(255, 45, 120, 0.22), rgba(255, 122, 77, 0.14));
+}
+.nb-grad-text {
+  background: linear-gradient(135deg, #ffffff 0%, #ffd3e2 52%, #ff9ec4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.nb-grad-ring {
+  box-shadow:
+    0 0 0 1px rgba(255, 45, 120, 0.35),
+    0 12px 34px -10px rgba(255, 45, 120, 0.6);
+}
+
+/* rotating conic border — the modern "live" outline */
+@property --nb-a {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.nb-conic {
+  position: relative;
+}
+.nb-conic::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--nb-a),
+    rgba(255, 45, 120, 0.95),
+    rgba(255, 122, 77, 0.65),
+    rgba(255, 158, 196, 0.12),
+    rgba(255, 45, 120, 0.95)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: nb-conic 4.2s linear infinite;
+  opacity: 0.9;
+}
+@keyframes nb-conic {
+  to {
+    --nb-a: 360deg;
+  }
+}
+
+/* ==========================================================================
+   MOTION LIBRARY
+   Every animation below is transform / opacity / filter only. Nothing here
+   animates width, height, top or left — the installer must never lay out in
+   the middle of a frame.
+   ========================================================================== */
+
+/* ---- entrances --------------------------------------------------------- */
+@keyframes nb-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes nb-rise-sm {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes nb-blur-in {
+  from {
+    opacity: 0;
+    filter: blur(9px);
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+@keyframes nb-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes nb-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes nb-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes nb-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes nb-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  62% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---- the curtain: the room opens --------------------------------------- */
+@keyframes nb-curtain-top {
+  0%,
+  55% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0);
+  }
+}
+@keyframes nb-curtain-bottom {
+  0%,
+  55% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0);
+  }
+}
+@keyframes nb-curtain-seam {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.1);
+  }
+  18% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  70% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1.06);
+  }
+}
+
+/* ---- light ------------------------------------------------------------ */
+@keyframes nb-sweep {
+  0% {
+    transform: translateX(-130%) skewX(-18deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.9;
+  }
+  88% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(230%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+@keyframes nb-sheen {
+  0% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateX(220%);
+    opacity: 0;
+  }
+}
+@keyframes nb-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+@keyframes nb-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.06);
+  }
+}
+@keyframes nb-pulse-ring {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.55);
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+@keyframes nb-spark {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.3);
+  }
+  22% {
+    opacity: 1;
+    transform: translate(var(--sx), var(--sy)) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--sx) * 2), calc(var(--sy) * 2 - 10px)) scale(0.2);
+  }
+}
+@keyframes nb-streak {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(var(--rot)) scaleX(0.1);
+  }
+  14% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scaleX(1);
+  }
+}
+@keyframes nb-flash {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  16% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
+/* ---- ambient ---------------------------------------------------------- */
+@keyframes nb-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(var(--dx), var(--dy), 0) scale(1.08);
+  }
+  66% {
+    transform: translate3d(calc(var(--dx) * -0.6), calc(var(--dy) * 0.7), 0) scale(0.95);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+@keyframes nb-mote {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  12%,
+  88% {
+    opacity: var(--o);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--mx), var(--my), 0);
+  }
+}
+@keyframes nb-grain-shift {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-2%, 1%);
+  }
+  50% {
+    transform: translate(1%, -2%);
+  }
+  75% {
+    transform: translate(-1%, -1%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+@keyframes nb-travel {
+  0% {
+    transform: translateX(-10%);
+    opacity: 0;
+  }
+  10%,
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+}
+
+/* ---- instruments ------------------------------------------------------ */
+@keyframes nb-dash-flow {
+  to {
+    background-position: 200% 0;
+  }
+}
+@keyframes nb-wave {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-50%);
+  }
+}
+@keyframes nb-breathe {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.35);
+  }
+}
+@keyframes nb-caret {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes nb-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+@keyframes nb-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes nb-draw-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes nb-draw-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes nb-genie {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.86) translateY(120px);
+  }
+}
+
+/* ---- named animation utilities ---------------------------------------- */
+.nb-rise {
+  animation: nb-rise 0.55s var(--ease-nb-out) both;
+}
+.nb-rise-sm {
+  animation: nb-rise-sm 0.42s var(--ease-nb-out) both;
+}
+.nb-blur-in {
+  animation: nb-blur-in 0.85s var(--ease-nb-out) both;
+}
+.nb-fade {
+  animation: nb-fade 0.34s ease both;
+}
+.nb-fade-out {
+  animation: nb-fade-out 0.3s ease both;
+}
+.nb-drop {
+  animation: nb-drop 0.5s var(--ease-nb-out) both;
+}
+.nb-slide-in {
+  animation: nb-slide-in 0.5s var(--ease-nb-out) both;
+}
+.nb-pop {
+  animation: nb-pop 0.5s var(--ease-nb-spring) both;
+}
+.nb-pulse {
+  animation: nb-glow-pulse 3.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.nb-breathe {
+  animation: nb-breathe 2.6s ease-in-out infinite;
+}
+.nb-blink {
+  animation: nb-blink 1.9s ease-in-out infinite;
+}
+.nb-caret {
+  animation: nb-caret 1.05s steps(1) infinite;
+}
+.nb-draw-x {
+  transform-origin: left center;
+  animation: nb-draw-x 0.7s var(--ease-nb-out) both;
+}
+.nb-draw-y {
+  transform-origin: top center;
+  animation: nb-draw-y 0.8s var(--ease-nb-out) both;
+}
+[dir="rtl"] .nb-draw-x {
+  transform-origin: right center;
+}
+
+/* stagger helpers */
+.nb-s1 {
+  animation-delay: 60ms;
+}
+.nb-s2 {
+  animation-delay: 130ms;
+}
+.nb-s3 {
+  animation-delay: 200ms;
+}
+.nb-s4 {
+  animation-delay: 270ms;
+}
+.nb-s5 {
+  animation-delay: 340ms;
+}
+.nb-s6 {
+  animation-delay: 410ms;
+}
+.nb-s7 {
+  animation-delay: 480ms;
+}
+.nb-s8 {
+  animation-delay: 560ms;
+}
+
+/* ---- cursor / focus --------------------------------------------------- */
+.nb-focus:focus {
+  outline: none;
+}
+.nb-focus:focus-visible {
+  outline: 2px solid rgba(255, 158, 196, 0.7);
+  outline-offset: 2px;
+}
+
+/* ---- custom scrollbar: rounded, translucent, pink on hover ------------ */
+.nb-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+.nb-scroll::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+.nb-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.nb-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 99px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+.nb-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 45, 120, 0.65);
+  background-clip: padding-box;
+}
+.nb-scroll::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ---- hairline separators --------------------------------------------- */
+.nb-hair-x {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.09) 14%,
+    rgba(255, 255, 255, 0.09) 86%,
+    transparent
+  );
+}
+.nb-hair-y {
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.09) 10%,
+    rgba(255, 255, 255, 0.09) 90%,
+    transparent
+  );
+}
+
+/* a light travelling along a hairline */
+.nb-travel::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  width: 22%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 158, 196, 0.5),
+    rgba(255, 45, 120, 0.7),
+    transparent
+  );
+  animation: nb-travel 6.5s var(--ease-nb) infinite;
+}
+[dir="rtl"] .nb-travel::after {
+  animation-direction: reverse;
+}
+
+/* ---- film grain ------------------------------------------------------ */
+.nb-grain::after {
+  content: "";
+  position: absolute;
+  inset: -4%;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: nb-grain-shift 0.9s steps(3) infinite;
+}
+
+/* ---- typography helpers --------------------------------------------- */
+.nb-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+.nb-drag {
+  cursor: default;
+}
+.nb-drag:active {
+  cursor: grabbing;
+}
+.nb-font-display {
+  font-family: var(--font-display);
+}
+.nb-font-ui {
+  font-family: var(--font-ui);
+}
+.nb-font-mono {
+  font-family: var(--font-mono);
+}
+.nb-font-fa {
+  font-family: var(--font-fa);
+}
+
+/* ---- window glyphs: drawn, not typed -------------------------------- */
+.nb-glyph-min::before,
+.nb-glyph-close::before {
+  content: "";
+  display: block;
+  width: 10px;
+  height: 10px;
+  background: currentColor;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  transition: transform 0.24s var(--ease-nb-spring);
+}
+.nb-glyph-min::before {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Crect y='4.5' width='10' height='1' rx='0.5'/%3E%3C/svg%3E");
+}
+.nb-glyph-close::before {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.2.1.1 1.2 3.9 5 .1 8.8l1.1 1.1L5 6.1l3.8 3.8 1.1-1.1L6.1 5 9.9 1.2 8.8.1 5 3.9z'/%3E%3C/svg%3E");
+}
+.nb-winbtn:hover .nb-glyph-min::before {
+  transform: translateY(1.5px);
+}
+.nb-winbtn:hover .nb-glyph-close::before {
+  transform: rotate(90deg);
+}
+
+/* ---- button sheen: driven by hover transition, not a mount animation -- */
+.nb-btn-sheen {
+  transform: translateX(-140%);
+  transition: transform 820ms var(--ease-nb);
+}
+.group:hover .nb-btn-sheen {
+  transform: translateX(240%);
+}
+[dir="rtl"] .nb-btn-sheen {
+  transform: translateX(140%);
+}
+[dir="rtl"] .group:hover .nb-btn-sheen {
+  transform: translateX(-240%);
+}
+
+/* ---- dashed leader that actually marches ---------------------------- */
+.nb-marching {
+  background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.22) 0 6px, transparent 6px 12px);
+  background-size: 200% 1px;
+  animation: nb-dash-flow 2.4s linear infinite;
+}
+[dir="rtl"] .nb-marching {
+  background-image: repeating-linear-gradient(270deg, rgba(255, 255, 255, 0.22) 0 6px, transparent 6px 12px);
+}
+
+/* ---- hover lift for interactive cards -------------------------------- */
+.nb-lift {
+  transition:
+    transform 0.34s var(--ease-nb),
+    border-color 0.34s ease,
+    box-shadow 0.34s ease;
+}
+.nb-lift:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 20px 44px -24px rgba(0, 0, 0, 0.95);
+}
+
+/* ---- typing: clip-path, never max-width (max-width lays out) --------- */
+@keyframes nb-type {
+  from {
+    clip-path: inset(-40% 100% -40% 0);
+  }
+  to {
+    clip-path: inset(-40% 0 -40% 0);
+  }
+}
+@keyframes nb-type-rtl {
+  from {
+    clip-path: inset(-40% 0 -40% 100%);
+  }
+  to {
+    clip-path: inset(-40% 0 -40% 0);
+  }
+}
+.nb-type {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: nb-type 1.5s steps(44, end) both;
+}
+[dir="rtl"] .nb-type {
+  animation-name: nb-type-rtl;
+}
+
+
+/* ==========================================================================
+   DYNAMICS (V3) — cursor-tracked glow, magnetic lean, orbit, page transition
+   ========================================================================== */
+
+/* ---- glow card: a radial light masked to the 1px edge ------------------ */
+.nb-glowcard {
+  --gx: 50%;
+  --gy: 50%;
+  --gon: 0;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 18px 40px -26px rgba(0, 0, 0, 0.95);
+}
+.nb-glowcard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: radial-gradient(
+    240px circle at var(--gx) var(--gy),
+    rgba(255, 45, 120, 0.9),
+    rgba(255, 122, 77, 0.38) 42%,
+    transparent 72%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: var(--gon);
+  transition: opacity 380ms ease;
+}
+.nb-glowcard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    260px circle at var(--gx) var(--gy),
+    rgba(255, 45, 120, 0.085),
+    transparent 66%
+  );
+  opacity: calc(var(--gon) * 0.9);
+  transition: opacity 380ms ease;
+}
+
+/* ---- page transition: directional enter, driven by --nb-page-x --------- */
+@keyframes nb-page-in {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--nb-page-x, 1) * 30px)) translateY(12px);
+    filter: blur(7px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+.nb-page {
+  animation: nb-page-in 0.46s var(--ease-nb-out) both;
+}
+
+/* ---- the sweep that masks a hard page swap ---------------------------- */
+@keyframes nb-sweep-across {
+  0% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(260%);
+    opacity: 0;
+  }
+}
+
+/* ---- orbit ------------------------------------------------------------ */
+@keyframes nb-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- a very small continuous bob (transform only) -------------------- */
+@keyframes nb-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(calc(var(--nb-float-amp, 4px) * -1));
+  }
+}
+
+/* ---- energy: the room breathes faster while the disk is busy --------- */
+@keyframes nb-energy {
+  0%,
+  100% {
+    opacity: calc(0.1 + var(--nb-energy, 0.25) * 0.22);
+  }
+  50% {
+    opacity: calc(0.16 + var(--nb-energy, 0.25) * 0.44);
+  }
+}
+.nb-energy {
+  animation: nb-energy calc(4200ms - var(--nb-energy, 0.25) * 2200ms) ease-in-out infinite;
+}
+
+/* ---- one switch, everything calms down ------------------------------ */
+.nb-reduce *,
+.nb-reduce *::before,
+.nb-reduce *::after {
+  animation-duration: 0.001ms !important;
+  animation-delay: 0ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

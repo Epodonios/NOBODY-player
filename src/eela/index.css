@@ -1,0 +1,2120 @@
+/* ═══ NOBODY EELA · paper-light design system ═══════════════════════════════
+   A bright, editorial, calm face for NOBODY. Warm paper background, white
+   cards, high-contrast serif display type (Playfair Display), teal ink.
+   Everything is scoped under #ne-root (or .ne- prefixed so the AppSwitch
+   veil can live at body level). Fully RTL-aware via logical properties. */
+
+#ne-root {
+  /* ── palette · light (default) ── */
+  --bg: #faf9f5;
+  --bg-wash: #edf5f3;
+  --fg: #1a191d;
+  --mut: #82818a;
+  --faint: #b6b5bd;
+  --card: #ffffff;
+  --card2: #f5f4ef;
+  --line: #ebe9e1;
+  --line2: #f1efe8;
+  --accent: #2fadc0;
+  --accent-ink: #1b8ea2;
+  --on-accent: #ffffff;
+  --shadow-sm: 0 1px 2px rgba(24, 22, 28, 0.05);
+  --shadow-md: 0 2px 6px rgba(24, 22, 28, 0.04), 0 18px 44px -24px rgba(24, 22, 28, 0.22);
+  --shadow-lg: 0 4px 14px rgba(24, 22, 28, 0.05), 0 34px 90px -36px rgba(24, 22, 28, 0.3);
+  --ink-veil: #232227;
+}
+
+#ne-root[data-ne-theme="dark"] {
+  --bg: #17171a;
+  --bg-wash: #10202a;
+  --fg: #f0efe9;
+  --mut: #9d9ca5;
+  --faint: #6d6c76;
+  --card: #202024;
+  --card2: #29292e;
+  --line: #2e2e34;
+  --line2: #26262b;
+  --accent: #3cc0d3;
+  --accent-ink: #56cadd;
+  --on-accent: #08242a;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.35), 0 18px 44px -22px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 4px 14px rgba(0, 0, 0, 0.4), 0 34px 90px -30px rgba(0, 0, 0, 0.7);
+  --ink-veil: #f0efe9;
+}
+
+#ne-root[data-ne-theme="contrast"] {
+  --bg: #ffffff;
+  --bg-wash: #ffffff;
+  --fg: #000000;
+  --mut: #2c2c2c;
+  --faint: #555555;
+  --card: #ffffff;
+  --card2: #f2f2f2;
+  --line: #1c1c1c;
+  --line2: #e8e8e8;
+  --accent: #086e80;
+  --accent-ink: #05566a;
+  --on-accent: #ffffff;
+  --shadow-sm: none;
+  --shadow-md: 0 0 0 1px #1c1c1c;
+  --shadow-lg: 0 0 0 2px #1c1c1c;
+  --ink-veil: #000000;
+}
+
+/* ── root stage ── */
+#ne-root {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow: hidden;
+  background:
+    radial-gradient(1100px 520px at 88% -6%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 62%),
+    radial-gradient(900px 480px at -4% 104%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 58%),
+    var(--bg);
+  color: var(--fg);
+  font-family: "Montserrat", "Vazirmatn", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#ne-root[dir="rtl"] {
+  font-family: "Vazirmatn", "Montserrat", ui-sans-serif, system-ui, sans-serif;
+}
+
+#ne-root .ne-display {
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+  letter-spacing: -0.01em;
+}
+/* NOTE: no dir=rtl override — Playfair has no Arabic glyphs, so Persian text
+   automatically falls through to Vazirmatn per-glyph while Latin stays serif. */
+
+#ne-root :focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 65%, transparent);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+/* ── atoms ──────────────────────────────────────────────────────────────── */
+
+.ne-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
+.ne-h1 {
+  font-size: clamp(2.1rem, 4.6vw, 3rem);
+  font-weight: 700;
+  line-height: 1.04;
+  color: var(--fg);
+}
+
+.ne-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+  /* V1.2.0 quality: a whisper of vertical sheen so large cards read as
+   * printed paper instead of flat thumbnails. */
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--fg) 3%, transparent), transparent 30%);
+}
+
+.ne-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--mut);
+  font-size: 11.5px;
+  box-shadow: var(--shadow-sm);
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+.ne-chip:hover { color: var(--fg); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+.ne-chip[data-on="true"] {
+  color: var(--accent-ink);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--card));
+}
+
+.ne-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--fg) 12%, var(--line));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fg) 4%, var(--card)), var(--card) 72%);
+  color: var(--fg);
+  font-size: 12.5px;
+  font-weight: 500;
+  box-shadow: var(--shadow-sm), inset 0 1px 0 color-mix(in srgb, var(--fg) 6%, transparent);
+  transition: transform 0.18s, box-shadow 0.18s, background 0.18s, color 0.18s;
+  white-space: nowrap;
+}
+.ne-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.ne-btn:active { transform: translateY(0) scale(0.98); }
+
+.ne-btn-primary {
+  background: linear-gradient(180deg, color-mix(in srgb, #ffffff 16%, var(--accent)), var(--accent) 62%);
+  border-color: transparent;
+  color: var(--on-accent);
+  font-weight: 600;
+  box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--accent) 60%, transparent), inset 0 1px 0 color-mix(in srgb, #ffffff 28%, transparent);
+}
+.ne-btn-primary:hover { box-shadow: 0 10px 26px -10px color-mix(in srgb, var(--accent) 65%, transparent); }
+
+.ne-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  color: var(--mut);
+  transition: color 0.18s, background 0.18s, transform 0.18s;
+  flex: none;
+}
+.ne-icon-btn:hover { color: var(--fg); background: var(--card2); }
+.ne-icon-btn[data-on="true"] { color: var(--accent-ink); }
+
+.ne-play-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, color-mix(in srgb, #ffffff 18%, var(--accent)), var(--accent) 60%);
+  color: var(--on-accent);
+  box-shadow: 0 10px 26px -8px color-mix(in srgb, var(--accent) 72%, transparent), inset 0 1.5px 0 color-mix(in srgb, #ffffff 30%, transparent);
+  transition: transform 0.18s, box-shadow 0.18s;
+  flex: none;
+}
+.ne-play-btn:hover { transform: scale(1.06); }
+.ne-play-btn:active { transform: scale(0.96); }
+
+/* segmented pill control */
+.ne-seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+.ne-seg-btn {
+  padding: 5px 13px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mut);
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.ne-seg-btn:hover { color: var(--fg); }
+.ne-seg-btn[data-on="true"] {
+  background: linear-gradient(180deg, color-mix(in srgb, #ffffff 14%, var(--accent)), var(--accent) 66%);
+  color: var(--on-accent);
+  font-weight: 600;
+  box-shadow: 0 4px 14px -4px color-mix(in srgb, var(--accent) 60%, transparent), inset 0 1px 0 color-mix(in srgb, #ffffff 22%, transparent);
+}
+
+/* toggle switch */
+.ne-switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--line);
+  transition: background 0.22s;
+  flex: none;
+}
+.ne-switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  inset-inline-start: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ne-switch[data-on="true"] { background: var(--accent); }
+.ne-switch[data-on="true"]::after { transform: translateX(18px); }
+#ne-root[dir="rtl"] .ne-switch[data-on="true"]::after { transform: translateX(-18px); }
+
+/* text input */
+.ne-input {
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 12.5px;
+  color: var(--fg);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 0;
+}
+.ne-input::placeholder { color: var(--faint); }
+.ne-input:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+/* settings slider */
+.ne-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--accent) 0%,
+    var(--accent) var(--ne-val, 50%),
+    var(--line) var(--ne-val, 50%),
+    var(--line) 100%
+  );
+}
+.ne-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 2.5px solid var(--card);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.28);
+}
+.ne-range::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 2.5px solid var(--card);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.28);
+}
+
+/* ── progress / volume sliders (pointer-driven) ─────────────────────────── */
+.ne-slider {
+  position: relative;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  touch-action: none;
+  flex: 1;
+  min-width: 0;
+}
+.ne-slider-track {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+.ne-slider-fill {
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(var(--ne-frac, 0) * 100%);
+  border-radius: 999px;
+  background: var(--accent);
+}
+.ne-slider-dot {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: calc(var(--ne-frac, 0) * 100%);
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 2.5px solid var(--card);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s;
+}
+#ne-root[dir="rtl"] .ne-slider-dot { transform: translate(50%, -50%); }
+.ne-slider:hover .ne-slider-dot { transform: translate(-50%, -50%) scale(1.25); }
+#ne-root[dir="rtl"] .ne-slider:hover .ne-slider-dot { transform: translate(50%, -50%) scale(1.25); }
+
+/* ── top navigation ─────────────────────────────────────────────────────── */
+.ne-topnav {
+  position: fixed;
+  top: 14px;
+  inset-inline: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  padding-inline: 14px;
+  pointer-events: none;
+}
+.ne-topnav-card {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  row-gap: 2px;
+  /* V1.2.0 overlap fix: the card used to be pinned at min(950px, 100%) —
+   * when the nav outgrew that budget its buttons rode ON TOP of the
+   * "BY EPODONIOS" credit. max-content sizes the card to its content
+   * (viewport-capped), so nothing can ever overlap again. */
+  width: max-content;
+  max-width: calc(100vw - 28px);
+  padding: 8px 10px 8px 16px;
+  border-radius: 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+}
+.ne-brand { display: flex; align-items: baseline; gap: 7px; min-width: 0; cursor: default; }
+.ne-brand b {
+  font-size: 15.5px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: var(--fg);
+}
+.ne-brand span {
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.ne-nav { display: flex; align-items: center; gap: 2px; margin-inline-start: auto; flex-wrap: wrap; justify-content: flex-end; }
+.ne-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--mut);
+  transition: color 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+.ne-nav-btn:hover { color: var(--fg); background: var(--card2); }
+.ne-nav-btn[data-on="true"] {
+  background: linear-gradient(180deg, color-mix(in srgb, #ffffff 14%, var(--accent)), var(--accent) 66%);
+  color: var(--on-accent);
+  font-weight: 600;
+  box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--accent) 60%, transparent), inset 0 1px 0 color-mix(in srgb, #ffffff 22%, transparent);
+}
+.ne-nav-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--line);
+  margin-inline: 6px;
+  flex: none;
+}
+
+@media (max-width: 640px) {
+  .ne-topnav-card { padding: 6px 8px; gap: 2px; border-radius: 15px; }
+  .ne-brand b { font-size: 12.5px; letter-spacing: 0.08em; }
+  .ne-brand span { display: none; }
+  .ne-nav { gap: 1px; }
+  .ne-nav-btn { padding: 6px 8px; }
+  .ne-nav-btn .ne-nav-sep { display: none; }
+  .ne-nav-sep { display: none; }
+  .ne-topnav .ne-icon-btn { display: none; } /* window controls: desktop sizes only */
+}
+
+/* ── library table ──────────────────────────────────────────────────────── */
+.ne-track-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr) 56px 84px;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  transition: background 0.16s;
+}
+.ne-track-row:hover { background: var(--card2); }
+.ne-track-row[data-playing="true"] {
+  background: color-mix(in srgb, var(--accent) 11%, var(--card));
+}
+.ne-track-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ne-track-row[data-playing="true"] .ne-track-title { color: var(--accent-ink); }
+.ne-track-artist {
+  font-size: 11px;
+  color: var(--mut);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ne-track-album {
+  font-size: 11.5px;
+  color: var(--mut);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ne-track-time { font-size: 11px; color: var(--mut); font-variant-numeric: tabular-nums; text-align: end; }
+.ne-track-acts { display: flex; align-items: center; justify-content: flex-end; gap: 2px; }
+
+@media (max-width: 720px) {
+  .ne-track-row { grid-template-columns: minmax(0, 1fr) 56px 68px; }
+  .ne-track-album { display: none; }
+}
+
+/* ── scroll surfaces ────────────────────────────────────────────────────── */
+.ne-scroll { overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.ne-scroll::-webkit-scrollbar { width: 9px; height: 9px; }
+.ne-scroll::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 999px;
+  border: 2.5px solid transparent;
+  background-clip: content-box;
+}
+.ne-scroll::-webkit-scrollbar-thumb:hover { background: var(--faint); background-clip: content-box; border: 2.5px solid transparent; }
+
+/* fade mask for lyrics */
+.ne-lyr-mask {
+  mask-image: linear-gradient(to bottom, transparent, #000 9%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 9%, #000 88%, transparent);
+}
+
+/* ── lyrics ─────────────────────────────────────────────────────────────── */
+.ne-lyr-line {
+  padding: 7px 12px;
+  border-radius: 12px;
+  font-size: calc(15px * var(--ne-lyr-scale, 1));
+  line-height: 1.5;
+  color: var(--faint);
+  transition: color 0.3s, background 0.3s, transform 0.3s;
+  text-align: start;
+  width: 100%;
+  display: block;
+}
+.ne-lyr-line:hover { color: var(--mut); }
+
+#ne-root .ne-lyr[data-style="calm"] .ne-lyr-line[data-active="true"] {
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+  color: var(--fg);
+  font-weight: 500;
+}
+#ne-root .ne-lyr[data-style="karaoke"] .ne-lyr-line {
+  font-size: calc(22px * var(--ne-lyr-scale, 1));
+}
+#ne-root .ne-lyr[data-style="karaoke"] .ne-lyr-line[data-active="true"] {
+  color: var(--accent-ink);
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  transform: translateY(-1px);
+}
+#ne-root .ne-lyr[data-style="minimal"] .ne-lyr-line[data-active="true"] {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+/* ── now playing overlay ────────────────────────────────────────────────── */
+.ne-np {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  overflow: hidden;
+  background: var(--bg);
+}
+.ne-np-bg {
+  position: absolute;
+  inset: -6%;
+  background-size: cover;
+  background-position: center;
+  /* V1.2.0: the bitmap is a pre-smoothed tiny PNG (eela/lib/backdrop.ts) —
+   * light blur only, so the wash is silky instead of blocky. */
+  filter: blur(18px) saturate(1.25);
+  opacity: 0.32;
+  transform: scale(1.2);
+}
+#ne-root[data-ne-theme="dark"] .ne-np-bg { opacity: 0.22; }
+.ne-np-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1200px 600px at 82% -10%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 60%),
+    color-mix(in srgb, var(--bg) 78%, transparent);
+}
+.ne-np-frame {
+  background: var(--card);
+  border-radius: 26px;
+  padding: 12px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--line);
+}
+.ne-np-title {
+  font-size: clamp(1.9rem, 4vw, 2.9rem);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--fg);
+}
+.ne-np-artist {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-style: italic;
+  color: var(--mut);
+}
+.ne-np-meta { font-size: 11.5px; color: var(--mut); letter-spacing: 0.02em; }
+
+/* ── ambient fullscreen ─────────────────────────────────────────────────── */
+.ne-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+}
+.ne-ambient-bg {
+  position: absolute;
+  inset: -8%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(22px) saturate(1.15);
+  opacity: 0.45;
+  transform: scale(1.25);
+}
+#ne-root[data-ne-theme="dark"] .ne-ambient-bg { opacity: 0.3; }
+.ne-ambient-close {
+  position: absolute;
+  top: 22px;
+  inset-inline-end: 22px;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--card) 72%, transparent);
+  border: 1px solid var(--line);
+  color: var(--fg);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s;
+  z-index: 2;
+}
+.ne-ambient-close:hover { transform: scale(1.08); }
+
+/* ── queue popover + toasts ─────────────────────────────────────────────── */
+.ne-pop {
+  position: fixed;
+  bottom: 96px;
+  inset-inline-end: 22px;
+  z-index: 55;
+  width: min(340px, calc(100vw - 32px));
+  max-height: min(420px, 52vh);
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.ne-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+  font-size: 12.5px;
+  color: var(--fg);
+  max-width: min(420px, calc(100vw - 40px));
+}
+.ne-toast-dot { width: 8px; height: 8px; border-radius: 999px; flex: none; }
+
+/* ── floating player bar ────────────────────────────────────────────────── */
+.ne-player {
+  position: fixed;
+  bottom: 16px;
+  inset-inline: 0;
+  z-index: 45;
+  display: flex;
+  justify-content: center;
+  padding-inline: 14px;
+  pointer-events: none;
+}
+.ne-player-card {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(1180px, 100%);
+  padding: 9px 14px;
+  border-radius: 22px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+}
+.ne-now-track { display: flex; align-items: center; gap: 10px; min-width: 0; width: 190px; flex: none; }
+.ne-now-titles { min-width: 0; }
+.ne-now-title { font-size: 12.5px; font-weight: 600; color: var(--fg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ne-now-artist { font-size: 10.5px; color: var(--mut); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.ne-player-mid { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+.ne-player-time { font-size: 10.5px; color: var(--mut); font-variant-numeric: tabular-nums; flex: none; width: 40px; }
+.ne-player-time[data-remain] { text-align: start; }
+
+@media (max-width: 900px) {
+  .ne-now-track { width: 150px; }
+  .ne-player-time { display: none; }
+}
+@media (max-width: 680px) {
+  .ne-player-card { flex-wrap: wrap; row-gap: 6px; padding-bottom: 12px; }
+  .ne-player-mid { order: 3; flex-basis: 100%; }
+  .ne-vol-group { display: none !important; }
+}
+
+/* ── EELA switch veil (body level, used by AppSwitch) ───────────────────── */
+.ne-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 480px at 86% -8%, rgba(47, 173, 192, 0.14), transparent 60%),
+    radial-gradient(760px 420px at 8% 108%, rgba(47, 173, 192, 0.1), transparent 55%),
+    #faf9f5;
+}
+.ne-veil-glow {
+  position: absolute;
+  width: 560px;
+  height: 560px;
+  border-radius: 999px;
+  filter: blur(90px);
+  background: radial-gradient(circle, rgba(47, 173, 192, 0.18), transparent 65%);
+  animation: ne-veil-drift 7s ease-in-out infinite alternate;
+}
+.ne-veil-glow.g2 {
+  width: 420px;
+  height: 420px;
+  animation-duration: 9s;
+  animation-delay: -3s;
+  background: radial-gradient(circle, rgba(47, 173, 192, 0.12), transparent 60%);
+}
+@keyframes ne-veil-drift {
+  from { transform: translate(-14vw, -6vh) scale(1); }
+  to { transform: translate(12vw, 8vh) scale(1.15); }
+}
+.ne-veil-word {
+  font-family: "Playfair Display", ui-serif, Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(3.4rem, 9vw, 6rem);
+  letter-spacing: 0.12em;
+  color: #232227;
+}
+.ne-veil-tag {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: #1b8ea2;
+}
+.ne-veil-line {
+  width: 180px;
+  height: 2px;
+  border-radius: 999px;
+  background: #ebe9e1;
+  overflow: hidden;
+  position: relative;
+}
+.ne-veil-line::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #2fadc0, transparent);
+  animation: ne-veil-sweep 1.2s ease-in-out infinite;
+}
+@keyframes ne-veil-sweep {
+  from { inset-inline-start: -40%; }
+  to { inset-inline-start: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ne-veil-glow, .ne-veil-line::after { animation: none; }
+}
+
+/* ── view entrance (soft, paper-like) ───────────────────────────────────── */
+.ne-view-enter { will-change: opacity, transform; }
+
+/* decorative visualizer strip */
+.ne-viz-strip { width: 100%; height: 90px; display: block; opacity: 0.92; }
+
+/* ═══ QA PASS · quality + cursor additions ═══════════════════════════════ */
+
+/* ── anti-banding dither: a fine film-grain over the whole paper surface ──
+   Light backgrounds reveal every gradient banding step of the radial glows
+   (reported as "pixelated / low quality"). A 2-3% fractal-noise layer
+   dithers the transitions and reads as premium paper texture instead. */
+#ne-root::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  opacity: 0.028;
+  mix-blend-mode: multiply;
+}
+#ne-root[data-ne-theme="dark"] #ne-root::after { mix-blend-mode: screen; opacity: 0.05; }
+#ne-root[data-ne-theme="contrast"] #ne-root::after { display: none; }
+
+/* The giant blur() glows band badly on light paper. Identical look, zero
+   gaussian raster: pure radial gradients (inherently smooth). */
+.ne-veil-glow { filter: none; background: radial-gradient(circle closest-side, rgba(47, 173, 192, 0.2), rgba(47, 173, 192, 0.07) 46%, transparent 72%); }
+.ne-veil-glow.g2 { background: radial-gradient(circle closest-side, rgba(47, 173, 192, 0.14), rgba(47, 173, 192, 0.05) 44%, transparent 70%); }
+
+/* NowPlaying / ambient cover backdrops — V1.2.0: the bitmap fed in is now a
+ * canvas-smoothed 48px PNG (see eela/lib/backdrop.ts), so the old 90–110px
+ * GPU gaussian (which rasterized into blocky "thumbnail" tiles on Windows)
+ * is replaced by a whisper of blur that only melts resampling hints. The
+ * cover-derived gradient veil still carries most of the color. */
+.ne-np-bg { filter: blur(18px) saturate(1.3) brightness(1.03); transform: scale(1.3); opacity: 0.3; }
+#ne-root[data-ne-theme="dark"] .ne-np-bg { opacity: 0.22; }
+.ne-np-veil {
+  background:
+    radial-gradient(1200px 600px at 82% -10%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 62%),
+    radial-gradient(900px 520px at 10% 112%, color-mix(in srgb, var(--accent) 11%, transparent), transparent 58%),
+    color-mix(in srgb, var(--bg) 74%, transparent);
+}
+.ne-ambient-bg { filter: blur(22px) saturate(1.18); transform: scale(1.32); }
+
+/* (V1.2.0: the old JS "ink" cursor CSS was removed — every UI now shares the
+   SVG cursor system; see src/dynamicCursor.ts.) */
+
+/* ── Library group-by (B2) ────────────────────────────────────────────────────
+   Group headers for artist / album / folder browsing: full-width rows inside
+   the library table card with eyebrow typography, an accent-tinted play chip
+   and a hairline separator. Logical properties only → RTL-safe. */
+
+.ne-input-plain { padding: 0; } /* SelectMenu wrapper: strip .ne-input padding */
+
+.ne-group-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-block-start: 14px;
+  padding: 9px 14px 7px;
+  border-block-end: 1px solid var(--line2);
+}
+.ne-group-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ne-group-rule {
+  height: 1px;
+  flex: 1 1 12px;
+  min-width: 12px;
+  background: var(--line2);
+}
+.ne-group-meta {
+  flex: none;
+  font-size: 10.5px;
+  color: var(--mut);
+  white-space: nowrap;
+}
+.ne-group-play {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  flex: none;
+  color: var(--accent-ink);
+  background: color-mix(in srgb, var(--accent) 12%, var(--card));
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+  box-shadow: var(--shadow-sm);
+  transition: background 0.18s, color 0.18s, transform 0.18s;
+}
+.ne-group-play:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: transparent;
+}
+.ne-group-play:active { transform: scale(0.96); }
+.ne-group-play:disabled { opacity: 0.5; cursor: default; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ne-group-play { transition: none; }
+  .ne-group-play:active,
+  .ne-group-play:hover { transform: none; }
+}
+
+/* ═══ V1.2.0 · Library "The Index" — a printed songbook's table of contents ══
+   The 11 categories are INDEX ENTRIES on paper: serif chapter titles, dotted
+   leaders, roman ordinals, live counts in thin teal rings — a two-column book
+   grid (one column on mobile). Deliberately the opposite of a tile grid: rows
+   sit directly on the paper, no cards. All logical properties → RTL-safe. */
+
+.ne-ix-col {
+  width: 100%;
+  max-width: 880px;
+}
+
+/* old-book double rule under the masthead (thick + thin pair) */
+.ne-ix-rule {
+  height: 5px;
+  border-top: 2px solid color-mix(in srgb, var(--fg) 58%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--fg) 24%, transparent);
+}
+
+/* two-column book grid — column-first fill (I–VI left, VII–XI right);
+   single column on narrow windows */
+.ne-ix-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px 30px;
+  animation: ne-ix-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+@media (min-width: 900px) {
+  .ne-ix-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(6, auto);
+  }
+  /* sub-indexes (groups / subfolders) fill row-first so short lists stay
+     balanced across the two columns; the 11-entry Index keeps the authentic
+     column-first 6+5 book split */
+  .ne-ix-grid[data-sub="true"] { grid-auto-flow: row; }
+}
+@keyframes ne-ix-in {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ── one index entry ── */
+.ne-ix-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 14px;
+  text-align: start;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.ne-ix-row:hover,
+.ne-ix-row:focus-visible {
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+.ne-ix-row:active { transform: scale(0.995); }
+
+/* roman numeral / oldstyle numeral column — faint serif italic, warms to ink */
+.ne-ix-ordinal {
+  flex: none;
+  width: 3.4rem;
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--faint);
+  font-variant-numeric: oldstyle-nums;
+  transition: color 0.18s;
+}
+.ne-ix-row:hover .ne-ix-ordinal,
+.ne-ix-row:focus-visible .ne-ix-ordinal { color: var(--accent-ink); }
+
+/* chapter title — big Playfair, like a book chapter line */
+.ne-ix-namewrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: none;
+  max-width: 62%;
+  min-width: 0;
+}
+.ne-ix-name {
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.22;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ne-ix-row[data-sub="true"] .ne-ix-name { font-size: 16.5px; }
+
+/* tiny path / albums note under the title (LTR content in RTL layouts) */
+.ne-ix-note {
+  font-size: 10px;
+  color: var(--faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  unicode-bidi: plaintext;
+}
+
+/* the dotted leader — the bookish heart of the row (radial-gradient dots) */
+.ne-ix-leader {
+  flex: 1 1 16px;
+  min-width: 16px;
+  height: 4px;
+  align-self: center;
+  margin-top: 9px;
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--fg) 26%, transparent) 1px, transparent 1.35px);
+  background-size: 7px 4px;
+  background-repeat: repeat-x;
+  background-position: 0 center;
+}
+.ne-ix-row[data-sub="true"] .ne-ix-leader { margin-top: 5px; }
+
+/* live count + duration, tabular numerals */
+.ne-ix-count {
+  flex: none;
+  min-width: 2ch;
+  text-align: end;
+  font-size: 12.5px;
+  color: var(--mut);
+  font-variant-numeric: tabular-nums;
+}
+.ne-ix-dur {
+  flex: none;
+  font-size: 10.5px;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+.ne-ix-num { font-variant-numeric: tabular-nums; }
+
+/* thin teal ring glyph — fills with ink on hover */
+.ne-ix-glyph {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px;
+  height: 27px;
+  border-radius: 999px;
+  color: var(--accent-ink);
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+.ne-ix-row:hover .ne-ix-glyph,
+.ne-ix-row:focus-visible .ne-ix-glyph {
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--on-accent);
+}
+
+/* the hover arrow — slides in from the inline edge */
+.ne-ix-arrow {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  color: var(--accent-ink);
+  opacity: 0;
+  transform: translateX(7px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+#ne-root[dir="rtl"] .ne-ix-arrow { transform: translateX(-7px); }
+.ne-ix-row:hover .ne-ix-arrow,
+.ne-ix-row:focus-visible .ne-ix-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* small screens: tighter ordinals, hide path notes */
+@media (max-width: 560px) {
+  .ne-ix-ordinal { width: 2.5rem; font-size: 13px; }
+  .ne-ix-name { font-size: 18px; }
+  .ne-ix-row[data-sub="true"] .ne-ix-name { font-size: 15px; }
+  .ne-ix-note { display: none; }
+}
+
+/* ── chapter page ── */
+
+/* "← Back · Categories" — serif italic link */
+.ne-ix-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 2px 0;
+  color: var(--mut);
+  cursor: pointer;
+  transition: color 0.18s;
+}
+.ne-ix-back:hover { color: var(--accent-ink); }
+.ne-ix-back .ne-display { font-size: 13.5px; }
+.ne-ix-back-dest {
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+  transition: color 0.18s;
+}
+.ne-ix-back:hover .ne-ix-back-dest { color: var(--accent-ink); }
+
+/* chapter icon in a thin teal ring */
+.ne-ix-badge {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  color: var(--accent-ink);
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+  background: color-mix(in srgb, var(--accent) 7%, var(--card));
+  box-shadow: var(--shadow-sm);
+}
+
+.ne-ix-h2 {
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  font-weight: 700;
+  line-height: 1.12;
+  color: var(--fg);
+}
+
+/* quiet empty states (lbEmptyQueue / lbNothingHere / noMatches) */
+.ne-ix-empty {
+  padding: 46px 20px;
+  text-align: center;
+  color: var(--mut);
+}
+.ne-ix-empty .ne-display {
+  font-size: 19px;
+  font-style: italic;
+  color: var(--mut);
+}
+.ne-ix-empty p {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+/* colophon — the printed footnote line at the foot of the Index */
+.ne-ix-colophon {
+  margin-top: 28px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line2);
+  text-align: center;
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--faint);
+}
+.ne-ix-colophon .ne-ix-num { font-style: normal; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ne-ix-grid { animation: none; }
+  .ne-ix-row,
+  .ne-ix-ordinal,
+  .ne-ix-arrow,
+  .ne-ix-glyph,
+  .ne-ix-back,
+  .ne-ix-back-dest { transition: none; }
+  .ne-ix-row:active { transform: none; }
+  .ne-ix-arrow { opacity: 1; transform: none; }
+}
+
+/* ═══ EELA · Download Center — the acquisitions ledger ══════════════════════
+   Task 30: full classic Download-Center parity dressed as a printed songbook
+   worksheet. Ledger rows with hairline rules, small-caps status stamps,
+   roman-numeral chapters (tabs), dotted leaders and a thin ink progress rule.
+   Status inks are extra theme vars so dark/contrast stay legible. */
+
+#ne-root {
+  --edc-ok: #1f8a5d;
+  --edc-warn: #a8681c;
+  --edc-err: #bb4430;
+  --edc-info: #6d5bd0;
+}
+#ne-root[data-ne-theme="dark"] {
+  --edc-ok: #5fcf98;
+  --edc-warn: #e2ab52;
+  --edc-err: #ef7f6c;
+  --edc-info: #ab9df2;
+}
+#ne-root[data-ne-theme="contrast"] {
+  --edc-ok: #14663f;
+  --edc-warn: #7a4c0d;
+  --edc-err: #93261a;
+  --edc-info: #4b3aa8;
+}
+
+/* ── chapters (tabs) — roman numerals, serif ── */
+.edc-tabs {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  margin-top: 26px;
+  border-bottom: 1px solid var(--line);
+}
+.edc-tab {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 16px 11px;
+  font-size: 13px;
+  color: var(--mut);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.18s, border-color 0.18s;
+}
+.edc-tab:hover { color: var(--fg); }
+.edc-tab[data-on="true"] {
+  color: var(--fg);
+  border-bottom-color: var(--accent);
+}
+.edc-tab i {
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--accent-ink);
+}
+.edc-tab b {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-ink);
+  font-variant-numeric: tabular-nums;
+  transform: translateY(-4px);
+}
+.edc-tab b:empty { display: none; }
+
+/* ── printed stat header line ── */
+.edc-ledger-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin-top: 20px;
+  padding: 9px 2px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line2);
+  font-size: 11.5px;
+  color: var(--mut);
+}
+.edc-ledger-head b {
+  font-weight: 700;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+.edc-ledger-head .edc-ok b { color: var(--edc-ok); }
+.edc-ledger-head .edc-warn b { color: var(--edc-warn); }
+.edc-ledger-sep { color: var(--faint); }
+.edc-leader {
+  flex: 1 1 24px;
+  min-width: 24px;
+  align-self: center;
+  height: 4px;
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--fg) 22%, transparent) 1px, transparent 1.35px);
+  background-size: 7px 4px;
+  background-repeat: repeat-x;
+  background-position: 0 center;
+}
+
+/* ── toolbar: scope + search ── */
+.edc-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.edc-scope { min-width: 200px; flex: 0 1 240px; }
+.edc-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 220px;
+  min-width: 180px;
+}
+.edc-search > svg {
+  position: absolute;
+  inset-inline-start: 12px;
+  color: var(--faint);
+  pointer-events: none;
+}
+.edc-search input { width: 100%; padding-inline-start: 34px; padding-inline-end: 30px; }
+.edc-search-clear {
+  position: absolute;
+  inset-inline-end: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  color: var(--faint);
+}
+.edc-search-clear:hover { color: var(--fg); background: var(--card2); }
+
+/* ── selection + status filter row ── */
+.edc-selrow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+.edc-mini {
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--mut);
+  font-size: 11px;
+  transition: color 0.18s, border-color 0.18s;
+}
+.edc-mini:hover { color: var(--fg); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+.edc-selnote {
+  font-size: 11px;
+  font-style: italic;
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+  color: var(--accent-ink);
+  margin-inline-start: 4px;
+}
+.edc-chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-inline-start: auto;
+}
+
+/* ── status stamps — small-caps printed marks ── */
+.edc-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2.5px 8px;
+  border: 1px solid color-mix(in srgb, currentColor 38%, transparent);
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--faint);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.edc-stamp[data-status="queued"] { color: var(--accent-ink); }
+.edc-stamp[data-status="searching"] { color: var(--accent-ink); }
+.edc-stamp[data-status="done"] { color: var(--edc-ok); }
+.edc-stamp[data-status="not-found"] { color: var(--edc-warn); }
+.edc-stamp[data-status="instrumental"] { color: var(--edc-info); }
+.edc-stamp[data-status="error"] { color: var(--edc-err); }
+.edc-stamp[data-status="skipped"] { color: var(--faint); border-style: dashed; }
+.edc-stamp[data-pulse="true"]::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: currentColor;
+  animation: edc-pulse 1.1s ease-in-out infinite;
+}
+@keyframes edc-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+/* filter chips reuse the stamp look but stay clickable */
+.edc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--mut);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.18s, border-color 0.18s, background 0.18s;
+}
+.edc-chip b {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--faint);
+}
+.edc-chip:hover { color: var(--fg); }
+.edc-chip[data-on="true"] {
+  color: var(--accent-ink);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--card));
+}
+.edc-chip[data-on="true"] b { color: var(--accent-ink); }
+
+/* ── action bar ── */
+.edc-actionbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin-top: 16px;
+}
+.edc-count {
+  font-size: 11.5px;
+  color: var(--mut);
+  font-variant-numeric: tabular-nums;
+}
+.edc-progress {
+  flex: 1 1 120px;
+  min-width: 80px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--line2);
+  overflow: hidden;
+}
+.edc-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 55%, transparent), var(--accent));
+  transition: width 0.3s ease;
+}
+#ne-root[dir="rtl"] .edc-progress-fill {
+  background: linear-gradient(-90deg, color-mix(in srgb, var(--accent) 55%, transparent), var(--accent));
+}
+.edc-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-style: italic;
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+  color: var(--mut);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── options: a small settings card ── */
+.edc-optcard {
+  margin-top: 16px;
+  padding: 4px 16px;
+}
+.edc-optrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 10px 0;
+  text-align: start;
+}
+.edc-optrow + .edc-optrow { border-top: 1px solid var(--line2); }
+.edc-optrow .edc-opt-text { min-width: 0; flex: 1; }
+.edc-optrow strong { display: block; font-size: 12.5px; font-weight: 600; color: var(--fg); }
+.edc-optrow small { display: block; margin-top: 1px; font-size: 10.5px; line-height: 1.45; color: var(--mut); }
+
+/* ── the ledger rows ── */
+.edc-list { margin-top: 18px; display: flex; flex-direction: column; }
+.edc-row {
+  display: grid;
+  grid-template-columns: auto 40px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 6px;
+  border-bottom: 1px solid var(--line2);
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.edc-row:hover { background: color-mix(in srgb, var(--card2) 72%, transparent); }
+.edc-row[data-selected="true"] {
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+#ne-root[dir="rtl"] .edc-row[data-selected="true"] { box-shadow: inset -2px 0 0 var(--accent); }
+.edc-row[data-busy="true"] { background: color-mix(in srgb, var(--accent) 4%, transparent); }
+
+/* checkbox — a quiet printed square */
+.edc-cb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border: 1.5px solid var(--faint);
+  border-radius: 4px;
+  color: transparent;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.edc-cb:hover { border-color: var(--accent-ink); }
+.edc-cb[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+/* art thumb + play on hover */
+.edc-thumb {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex: none;
+  background: var(--card2);
+  border: 1px solid var(--line2);
+}
+.edc-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.edc-thumb-hover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--on-accent);
+  background: color-mix(in srgb, var(--ink-veil) 42%, transparent);
+  opacity: 0;
+  transition: opacity 0.18s;
+}
+.edc-thumb:hover .edc-thumb-hover,
+.edc-thumb:focus-visible .edc-thumb-hover { opacity: 1; }
+
+/* meta + dotted leader to the duration */
+.edc-meta { min-width: 0; }
+.edc-meta-line { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.edc-meta-title {
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.edc-meta .edc-leader { height: 5px; align-self: center; margin-top: 3px; flex: 0 1 40px; }
+.edc-meta-dur { font-size: 10.5px; color: var(--faint); font-variant-numeric: tabular-nums; flex: none; }
+.edc-meta-sub {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--mut);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.edc-have {
+  flex: none;
+  margin-inline-start: 6px;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--edc-ok);
+  border: 1px solid color-mix(in srgb, var(--edc-ok) 40%, transparent);
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+
+.edc-acts { display: flex; align-items: center; justify-content: flex-end; gap: 1px; }
+.edc-acts .ne-icon-btn { width: 28px; height: 28px; }
+.edc-acts .ne-icon-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* ── health check footnote ── */
+.edc-health {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.edc-health-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-style: italic;
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+}
+.edc-health-note[data-ok="true"] { color: var(--edc-ok); }
+.edc-health-note[data-ok="false"] { color: var(--edc-err); }
+
+/* ── modal sheets ── */
+.edc-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: color-mix(in srgb, var(--ink-veil) 26%, transparent);
+  backdrop-filter: blur(6px);
+}
+.edc-sheet {
+  width: 100%;
+  max-width: 620px;
+  max-height: min(84vh, 720px);
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  padding: 18px 20px 16px;
+}
+.edc-sheet[data-wide="true"] { max-width: 760px; }
+.edc-sheet-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.edc-sheet-head h3 {
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fg);
+  line-height: 1.15;
+}
+.edc-sheet-head small {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--mut);
+}
+.edc-sheet-head .ne-icon-btn { margin-inline-start: auto; }
+.edc-sheet-body { overflow-y: auto; padding-top: 12px; }
+
+/* query grid inside the lyrics sheet */
+.edc-query {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: end;
+  margin-bottom: 12px;
+}
+.edc-query label { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.edc-query label span {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* candidate rows */
+.edc-cand {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  overflow: hidden;
+  transition: border-color 0.18s;
+}
+.edc-cand + .edc-cand { margin-top: 8px; }
+.edc-cand:hover { border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.edc-cand-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  text-align: start;
+}
+.edc-cand-names { min-width: 0; flex: 1; }
+.edc-cand-names strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.edc-cand-names small {
+  display: block;
+  font-size: 10.5px;
+  color: var(--mut);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.edc-badges { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; flex: none; }
+.edc-badge {
+  font-style: normal;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 1.5px 6px;
+  border-radius: 3px;
+  border: 1px solid color-mix(in srgb, var(--fg) 18%, transparent);
+  color: var(--mut);
+}
+.edc-badge[data-tone="ok"] { color: var(--edc-ok); border-color: color-mix(in srgb, var(--edc-ok) 40%, transparent); }
+.edc-badge[data-tone="acc"] { color: var(--accent-ink); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.edc-badge[data-tone="info"] { color: var(--edc-info); border-color: color-mix(in srgb, var(--edc-info) 40%, transparent); }
+.edc-caret { flex: none; color: var(--faint); transition: rotate 0.18s; }
+
+.edc-cand-body { padding: 0 12px 12px; }
+.edc-preview {
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line2);
+  border-radius: 10px;
+  background: var(--card2);
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: var(--mut);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.edc-cand-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+.edc-cand-actions.center { justify-content: center; padding-top: 12px; }
+
+.edc-modal-note {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line2);
+  font-size: 10.5px;
+  font-style: italic;
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+  color: var(--faint);
+  line-height: 1.5;
+}
+
+/* cover picker grid */
+.edc-cover-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 10px;
+}
+.edc-cover-cell {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--line);
+  background: var(--card2);
+  transition: border-color 0.15s, transform 0.15s;
+}
+.edc-cover-cell:hover { transform: translateY(-2px); }
+.edc-cover-cell[data-picked="true"] { border-color: var(--accent); }
+.edc-cover-cell img { width: 100%; height: 100%; object-fit: cover; }
+.edc-cover-src {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding: 3px 6px;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--on-accent);
+  background: color-mix(in srgb, var(--ink-veil) 55%, transparent);
+}
+.edc-cover-check {
+  position: absolute;
+  top: 6px;
+  inset-inline-end: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.edc-cover-preview {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+}
+.edc-cover-preview img {
+  max-width: 180px;
+  max-height: 180px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+}
+
+/* ── empty states ── */
+.edc-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 44px 20px;
+  text-align: center;
+  color: var(--mut);
+}
+.edc-empty .ne-display { font-size: 20px; font-style: italic; color: var(--fg); }
+.edc-empty span { font-size: 12px; max-width: 380px; line-height: 1.6; }
+
+/* spinner shared by stamps/buttons */
+.edc-spin { animation: edc-rotate 1s linear infinite; }
+@keyframes edc-rotate { to { transform: rotate(360deg); } }
+
+/* small screens: drop the stamp column under the meta, tighten actions */
+@media (max-width: 620px) {
+  .edc-row { grid-template-columns: auto 36px minmax(0, 1fr) auto; }
+  .edc-row .edc-stamp { grid-column: 2 / -1; justify-self: start; margin-top: -2px; }
+  .edc-row .edc-meta { grid-column: 3; }
+  .edc-query { grid-template-columns: 1fr; }
+  .edc-chips { margin-inline-start: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .edc-stamp[data-pulse="true"]::before { animation: none; }
+  .edc-spin { animation: none; }
+  .edc-cover-cell:hover { transform: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   Task 30 — MANAGED FOLDER LEDGER (ne-fm-*)
+   The Folders chapter renders each managed folder (bridge list ∪ mirror
+   folders) as a ledger row: serif name → dotted leader → live count → small
+   ink "rescan" / "remove" text buttons, plus a serif "Add folder" row at the
+   end. Logical properties only — RTL-safe by construction.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+#ne-root { --ne-danger: #c0392b; }
+#ne-root[data-ne-theme="dark"] { --ne-danger: #ff8a80; }
+
+.ne-fm-ledger { display: flex; flex-direction: column; }
+
+.ne-fm-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 14px;
+  text-align: start;
+  transition: background 0.18s, opacity 0.18s;
+}
+.ne-fm-row:hover,
+.ne-fm-row:focus-within {
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+.ne-fm-row[data-busy="true"] { opacity: 0.7; }
+
+/* serif folder name — opens the folder's sub-index like a chapter entry */
+.ne-fm-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+  font-size: 16.5px;
+  font-weight: 600;
+  line-height: 1.22;
+  color: var(--fg);
+  text-align: start;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.18s;
+}
+.ne-fm-name:hover:not(:disabled) { color: var(--accent-ink); }
+.ne-fm-name:disabled { cursor: default; }
+.ne-fm-name:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* small ink text actions — ghost pills in the ne-chip / ne-btn idiom */
+.ne-fm-acts {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+.ne-fm-act {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--mut);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  transition: color 0.18s, border-color 0.18s, background 0.18s, transform 0.18s;
+}
+.ne-fm-act:hover:not(:disabled) {
+  color: var(--fg);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  transform: translateY(-1px);
+}
+.ne-fm-act:disabled { opacity: 0.45; cursor: default; }
+.ne-fm-act:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  outline-offset: 2px;
+}
+/* armed two-tap confirm — the row's remove becomes a danger stamp */
+.ne-fm-act[data-danger="true"] {
+  color: var(--ne-danger);
+  border-color: color-mix(in srgb, var(--ne-danger) 45%, transparent);
+  background: color-mix(in srgb, var(--ne-danger) 8%, transparent);
+  font-weight: 600;
+}
+
+/* the serif "Add folder" ledger row */
+.ne-fm-add {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 11px 14px;
+  border-radius: 14px;
+  color: var(--accent-ink);
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  text-align: start;
+  transition: background 0.18s, color 0.18s;
+}
+.ne-fm-add:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.ne-fm-add:disabled { opacity: 0.5; cursor: default; }
+.ne-fm-add:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  outline-offset: 2px;
+}
+.ne-fm-add-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ne-fm-add-plus {
+  flex: none;
+  font-family: ui-serif, Georgia, serif;
+  font-style: normal;
+  font-size: 17px;
+  color: var(--accent-ink);
+}
+
+/* small line used when no managed folders exist alongside unfiled entries */
+.ne-fm-none {
+  margin: 4px 0 8px;
+  font-size: 12px;
+  color: var(--mut);
+}
+
+@media (max-width: 560px) {
+  .ne-fm-row { flex-wrap: wrap; row-gap: 4px; }
+  .ne-fm-acts { margin-inline-start: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ne-fm-row,
+  .ne-fm-name,
+  .ne-fm-act,
+  .ne-fm-add { transition: none; }
+  .ne-fm-act:hover:not(:disabled) { transform: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   Task 40-eela — SUPPORT NUDGE (ne-nudge-*) · the "ex libris"
+   A small paper bookmark that slips in at the foot of the page every once in
+   a while (shared scheduler in src/nudge.ts): hairline wallet rows, serif
+   display title, one quiet ✕ / Escape. Fixed bottom-end like the queue sheet,
+   width ~320px, .ne-card paper carries the body/border/shadow.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.ne-nudge {
+  position: fixed;
+  bottom: 96px;
+  inset-inline-end: 22px;
+  z-index: 58;
+  width: min(320px, calc(100vw - 32px));
+  padding: 15px 16px 14px;
+  border-radius: 18px 18px 14px 14px;
+  overflow: hidden;
+}
+/* the ex-libris ribbon: a thin accent rule bookmarking the card's head */
+.ne-nudge::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--accent), color-mix(in srgb, var(--accent) 30%, transparent));
+}
+.ne-nudge-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ne-nudge-x { width: 26px; height: 26px; margin-inline-end: -6px; }
+.ne-nudge-x:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  outline-offset: 2px;
+}
+.ne-nudge-title {
+  margin-top: 9px;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--fg);
+}
+.ne-nudge-body {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--mut);
+}
+
+/* hairline wallet rows — tap to copy, ledger-fashion */
+.ne-nudge-wallets { margin-top: 12px; border-top: 1px solid var(--line2); }
+.ne-nudge-wallet {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 2px;
+  border-bottom: 1px solid var(--line2);
+  text-align: start;
+  transition: background 0.16s;
+}
+.ne-nudge-wallet:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.ne-nudge-wallet:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  outline-offset: -2px;
+  border-radius: 10px;
+}
+.ne-nudge-mono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+.ne-nudge-wmeta { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.ne-nudge-wcode {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+}
+.ne-nudge-wcode i {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  color: var(--faint);
+}
+.ne-nudge-waddr {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  color: var(--mut);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ne-nudge-copy { color: var(--faint); flex: none; }
+.ne-nudge-wallet:hover .ne-nudge-copy { color: var(--accent-ink); }
+
+/* footer serif link + star action */
+.ne-nudge-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 12px;
+  font-family: "Playfair Display", "Vazirmatn", ui-serif, Georgia, serif;
+  font-style: italic;
+  font-size: 13.5px;
+  color: var(--accent-ink);
+}
+.ne-nudge-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.ne-nudge-link:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.ne-nudge-star { margin-top: 14px; width: 100%; justify-content: center; }
+
+/* About view: the Instagram row is aria-disabled — no lift, no pointer,
+   just a quiet placeholder wearing its "coming soon" chip */
+.ne-btn[aria-disabled="true"] { cursor: default; opacity: 0.8; }
+.ne-btn[aria-disabled="true"]:hover,
+.ne-btn[aria-disabled="true"]:active { transform: none; box-shadow: var(--shadow-sm); }
+
+@media (max-width: 560px) {
+  .ne-nudge { inset-inline: 16px; width: auto; bottom: 92px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ne-nudge-wallet,
+  .ne-nudge-link { transition: none; }
+}
+
+/* ── ambient transport (Task 40-eela, request #3) ─────────────────────────
+   prev / play-pause / next centered under the breathing spectrum — serif
+   ghost buttons on the blurred cover wash. The stage itself closes on any
+   click, so every button stops propagation on pointerdown AND click. */
+.ne-transport {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.ne-transport-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  color: var(--fg);
+  background: color-mix(in srgb, var(--card) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--fg) 14%, var(--line));
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(6px);
+  transition: transform 0.18s, background 0.18s, color 0.18s, border-color 0.18s;
+}
+.ne-transport-btn:hover {
+  transform: translateY(-1px) scale(1.04);
+  background: color-mix(in srgb, var(--card) 82%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  color: var(--accent-ink);
+}
+.ne-transport-btn:active { transform: scale(0.94); }
+.ne-transport-btn:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  outline-offset: 2px;
+}
+.ne-transport-btn[data-main="true"] { width: 52px; height: 52px; }
+@media (prefers-reduced-motion: reduce) {
+  .ne-transport-btn { transition: none; }
+  .ne-transport-btn:hover,
+  .ne-transport-btn:active { transform: none; }
+}

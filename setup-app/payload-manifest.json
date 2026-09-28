@@ -1,0 +1,36 @@
+{
+  "files": [
+    {
+      "rel": "resources/app.asar",
+      "bytes": 46913814,
+      "sha256": "62d39049be68b84010de0bab3cbba0045729dc9f1cff55af84578866d3df56f4"
+    },
+    {
+      "rel": "resources/app.asar.unpacked/node_modules/@tauri-apps/cli-linux-x64-gnu/cli.linux-x64-gnu.node",
+      "bytes": 18490504,
+      "sha256": "b52e631907cdf3a060c755e480c86131eceb573a32006f913508165d6ae2229b"
+    },
+    {
+      "rel": "resources/app.asar.unpacked/node_modules/@tauri-apps/cli-linux-x64-gnu/package.json",
+      "bytes": 582,
+      "sha256": "25f19271eeddc023bb4655ba7a19d7bbb135e643d47507582daf586ecd844d85"
+    },
+    {
+      "rel": "resources/app.asar.unpacked/node_modules/@tauri-apps/cli-linux-x64-musl/cli.linux-x64-musl.node",
+      "bytes": 18432968,
+      "sha256": "b0554aeeffbb746d1938cf41baa04ac84e50ff0efb62d9c43f06aaca0c2272eb"
+    },
+    {
+      "rel": "resources/app.asar.unpacked/node_modules/@tauri-apps/cli-linux-x64-musl/package.json",
+      "bytes": 584,
+      "sha256": "7d49d98dbfe3c387691ff9ef63dc6359efcb462d7801c08b8386f4d6c983f493"
+    },
+    {
+      "rel": "resources/icon.png",
+      "bytes": 666891,
+      "sha256": "d74274c9676f178c8e6f2200205d3acf9c11e3312c524a686abfebfce6150607"
+    }
+  ],
+  "totalBytes": 84505343,
+  "totalFiles": 6
+}

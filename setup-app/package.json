@@ -1,0 +1,36 @@
+{
+  "name": "nobody-setup",
+  "productName": "NOBODYSetup",
+  "private": true,
+  "version": "1.5.1",
+  "description": "NOBODY Setup \u2014 the design-exact assisted installer (custom-windows-installer-ui design, MEMENTO-style real install pipeline)",
+  "author": "EPODONIOS",
+  "license": "MIT",
+  "main": "dist-electron/electron/main.js",
+  "scripts": {
+    "build:renderer": "vite build",
+    "build:main": "tsc -p tsconfig.electron.json",
+    "build": "npm run build:renderer && npm run build:main",
+    "sync:payload": "node scripts/sync-payload.js",
+    "predist": "npm run sync:payload",
+    "dist": "npm run build && electron-builder --win --x64",
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "clsx": "2.1.1",
+    "@types/node": "22.19.17",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "5.1.1",
+    "electron": "41.7.1",
+    "electron-builder": "26.15.3",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "tailwind-merge": "3.4.0",
+    "typescript": "5.9.3",
+    "vite": "7.3.2",
+    "vite-plugin-singlefile": "2.3.0",
+    "@tailwindcss/vite": "4.1.17",
+    "tailwindcss": "4.1.17"
+  }
+}

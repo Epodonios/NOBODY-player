@@ -1,0 +1,5 @@
+{
+  "appVersion": "1.5.1",
+  "mode": "runtime-reuse",
+  "electron": "41.7.1"
+}

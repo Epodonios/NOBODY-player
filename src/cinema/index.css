@@ -1,0 +1,1375 @@
+@import "tailwindcss";
+
+/* ── NOBODY Cinema design system ───────────────────────────────────────────
+   Scoped entirely under .nc-root so it can coexist with the classic NOBODY
+   shell inside the same document. The root element (#nc-root) carries the
+   data-theme / lang / dir attributes instead of <html>. */
+
+.nc-root {
+  --bg: #0a0a0d;
+  --bg2: #101015;
+  --card: #15151c;
+  --card2: #1b1b24;
+  --fg: #f2efe7;
+  --mut: #98938a;
+  --faint: #5c5851;
+  --line: rgba(242, 239, 231, 0.09);
+  --line2: rgba(242, 239, 231, 0.16);
+  --accent: #e3b162;
+  --on-accent: #171207;
+  --glass: rgba(16, 16, 21, 0.72);
+  --shadow: 0 24px 80px -20px rgba(0, 0, 0, 0.65);
+  --font-ui: "Space Grotesk", "Vazirmatn", system-ui, sans-serif;
+  --font-display: "Fraunces Variable", "Vazirmatn", Georgia, serif;
+
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-ui);
+  overscroll-behavior-y: none;
+  min-height: 100dvh;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+.nc-root[data-theme="light"] {
+  --bg: #efece5;
+  --bg2: #e7e3d9;
+  --card: #faf8f2;
+  --card2: #fffdf8;
+  --fg: #191713;
+  --mut: #6f6a5f;
+  --faint: #a8a296;
+  --line: rgba(25, 23, 19, 0.12);
+  --line2: rgba(25, 23, 19, 0.22);
+  --accent: #a26b12;
+  --on-accent: #fdf8ec;
+  --glass: rgba(250, 248, 242, 0.78);
+  --shadow: 0 24px 70px -28px rgba(60, 50, 25, 0.35);
+}
+
+.nc-root[data-theme="contrast"] {
+  --bg: #000000;
+  --bg2: #000000;
+  --card: #0a0a0a;
+  --card2: #111111;
+  --fg: #ffffff;
+  --mut: #d8d8d8;
+  --faint: #909090;
+  --line: rgba(255, 255, 255, 0.42);
+  --line2: rgba(255, 255, 255, 0.65);
+  --accent: #ffd84d;
+  --on-accent: #000000;
+  --glass: rgba(0, 0, 0, 0.88);
+  --shadow: 0 0 0 2px rgba(255, 255, 255, 0.24);
+}
+
+.nc-root[lang="fa"] {
+  --font-ui: "Vazirmatn", "Space Grotesk", system-ui, sans-serif;
+  --font-display: "Vazirmatn", "Fraunces Variable", Georgia, serif;
+}
+
+.nc-root .font-display { font-family: var(--font-display); }
+
+/* numbers render LTR inside their own element, even in RTL context — §1 */
+.nc-root .tnum {
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+  unicode-bidi: isolate;
+  letter-spacing: 0.02em;
+}
+
+/* textures & surfaces */
+.nc-root.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='ncn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23ncn)' opacity='0.6'/%3E%3C/svg%3E");
+}
+.nc-root[data-theme="light"].grain::after { opacity: 0.035; }
+.nc-root[data-theme="contrast"].grain::after { display: none; }
+
+.nc-root .surface { background: var(--card); border: 1px solid var(--line); }
+.nc-root .hairline { border-color: var(--line); }
+.nc-root .t-mut { color: var(--mut); }
+.nc-root .t-faint { color: var(--faint); }
+.nc-root .t-accent { color: var(--accent); }
+.nc-root .bg-accent { background: var(--accent); color: var(--on-accent); }
+
+.nc-root .accent-ring { box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent); }
+
+/* scrollbars (scoped to the cinema subtree) */
+.nc-root * { scrollbar-width: thin; scrollbar-color: var(--line2) transparent; }
+.nc-root *::-webkit-scrollbar { width: 8px; height: 8px; }
+.nc-root *::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 8px; }
+.nc-root *::-webkit-scrollbar-track { background: transparent; }
+
+.nc-root ::selection { background: var(--accent); color: var(--on-accent); }
+
+/* outline text flourish */
+.nc-root .outline-text {
+  -webkit-text-stroke: 1px var(--line2);
+  color: transparent;
+}
+
+/* keyframes ── opacity/transform only, cheap to composite ── */
+@keyframes nc-eq-bounce {
+  0%, 100% { transform: translateY(0) scale(1.02); }
+  38% { transform: translateY(-0.18em) scale(1.045); }
+  62% { transform: translateY(0.02em) scale(1.01); }
+}
+@keyframes nc-spin { to { transform: rotate(360deg); } }
+@keyframes nc-pulse-soft { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+@keyframes nc-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes nc-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+.nc-root .anim-rise { animation: nc-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.nc-root .eq-active-line { animation: nc-eq-bounce 1.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; transform-origin: center; }
+.nc-root .spin-slow { animation: nc-spin 9s linear infinite; }
+.nc-root .pulse-soft { animation: nc-pulse-soft 2.4s ease-in-out infinite; }
+.nc-root .blink { animation: nc-blink 1.1s step-start infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nc-root .eq-active-line, .nc-root .spin-slow, .nc-root .pulse-soft { animation: none; }
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   DREAM SYSTEM — “rêve” edition
+   A living aurora field, layered glass, liquid accent light. Everything is
+   opacity/transform-only animation so it stays cheap to composite.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.nc-root {
+  /* dream palette — accent-anchored, plus the companion hues used across the app */
+  --dream-a: var(--accent);
+  --dream-b: #e3638f;
+  --dream-c: #8f63e3;
+  --dream-d: #63e3c8;
+  --glass-hi: rgba(255, 255, 255, 0.06);
+  --blob-o: 0.16;
+  --dust-o: 0.55;
+}
+
+.nc-root[data-theme="light"] {
+  --glass-hi: rgba(255, 255, 255, 0.65);
+  --blob-o: 0.12;
+  --dust-o: 0.3;
+}
+.nc-root[data-theme="contrast"] .nc-dream { display: none; }
+
+/* layered glass — the signature dream surface */
+.nc-root .glass {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--card) 66%, transparent),
+    color-mix(in srgb, var(--bg2) 52%, transparent)
+  );
+  backdrop-filter: blur(22px) saturate(1.35);
+  -webkit-backdrop-filter: blur(22px) saturate(1.35);
+  border: 1px solid var(--line);
+  box-shadow: inset 0 1px 0 var(--glass-hi), 0 18px 50px -18px rgba(0, 0, 0, 0.55);
+}
+.nc-root[data-theme="light"] .glass {
+  box-shadow: inset 0 1px 0 var(--glass-hi), 0 18px 44px -22px rgba(70, 58, 30, 0.35);
+}
+
+/* every accent button breathes a little light */
+.nc-root .bg-accent {
+  box-shadow: 0 10px 28px -10px color-mix(in srgb, var(--accent) 60%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+/* gradient display title */
+.nc-root .dream-title {
+  background: linear-gradient(
+    115deg,
+    var(--fg) 25%,
+    color-mix(in srgb, var(--accent) 90%, var(--fg)) 62%,
+    color-mix(in srgb, var(--accent) 55%, #ffffff) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── aurora field ── */
+.nc-root .nc-dream {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.nc-root .nc-dream-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  will-change: transform;
+  opacity: var(--blob-o);
+  transition: opacity 1.6s ease;
+}
+.nc-root .nc-dream-blob.b1 {
+  width: 48vmax; height: 48vmax; top: -20vmax; inset-inline-start: -14vmax;
+  background: radial-gradient(circle at 32% 32%, var(--dream-a), transparent 66%);
+  animation: nc-drift-1 54s ease-in-out infinite alternate;
+}
+.nc-root .nc-dream-blob.b2 {
+  width: 40vmax; height: 40vmax; top: -14vmax; inset-inline-end: -16vmax;
+  background: radial-gradient(circle at 60% 40%, var(--dream-b), transparent 64%);
+  animation: nc-drift-2 66s ease-in-out infinite alternate;
+}
+.nc-root .nc-dream-blob.b3 {
+  width: 44vmax; height: 44vmax; bottom: -22vmax; inset-inline-start: -10vmax;
+  background: radial-gradient(circle at 40% 60%, var(--dream-c), transparent 66%);
+  animation: nc-drift-3 72s ease-in-out infinite alternate;
+}
+.nc-root .nc-dream-blob.b4 {
+  width: 30vmax; height: 30vmax; bottom: -8vmax; inset-inline-end: -6vmax;
+  background: radial-gradient(circle at 50% 50%, var(--dream-d), transparent 62%);
+  animation: nc-drift-4 60s ease-in-out infinite alternate;
+  opacity: calc(var(--blob-o) * 0.8);
+}
+/* music breathes light into the room */
+.nc-root[data-playing="true"] .nc-dream-blob { opacity: calc(var(--blob-o) * 1.65); }
+
+@keyframes nc-drift-1 { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(10vmax, 7vmax, 0) scale(1.22); } }
+@keyframes nc-drift-2 { from { transform: translate3d(0, 0, 0) scale(1.1); } to { transform: translate3d(-8vmax, 9vmax, 0) scale(0.92); } }
+@keyframes nc-drift-3 { from { transform: translate3d(0, 0, 0) scale(0.95); } to { transform: translate3d(9vmax, -7vmax, 0) scale(1.18); } }
+@keyframes nc-drift-4 { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(-7vmax, -6vmax, 0) scale(1.25); } }
+
+/* ── stardust ── */
+.nc-root .nc-dust,
+.nc-root .nc-dust2 {
+  position: absolute;
+  inset: -60% -100%;
+  pointer-events: none;
+  opacity: var(--dust-o);
+  background-image:
+    radial-gradient(1.4px 1.4px at 12% 22%, rgba(255, 255, 255, 0.75) 50%, transparent 51%),
+    radial-gradient(1.1px 1.1px at 34% 68%, rgba(255, 255, 255, 0.55) 50%, transparent 51%),
+    radial-gradient(1.6px 1.6px at 56% 14%, rgba(255, 255, 255, 0.65) 50%, transparent 51%),
+    radial-gradient(1px 1px at 74% 44%, rgba(255, 255, 255, 0.5) 50%, transparent 51%),
+    radial-gradient(1.3px 1.3px at 88% 76%, rgba(255, 255, 255, 0.7) 50%, transparent 51%),
+    radial-gradient(1px 1px at 22% 88%, rgba(255, 255, 255, 0.45) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 64% 92%, rgba(255, 255, 255, 0.6) 50%, transparent 51%),
+    radial-gradient(1px 1px at 44% 40%, rgba(255, 255, 255, 0.4) 50%, transparent 51%);
+  animation: nc-dust-drift 160s linear infinite, nc-dust-twinkle 11s ease-in-out infinite alternate;
+}
+.nc-root .nc-dust2 { inset: -40% -160%; animation-duration: 240s, 7s; opacity: calc(var(--dust-o) * 0.6); }
+@keyframes nc-dust-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(6%, 3%, 0); } }
+@keyframes nc-dust-twinkle { from { opacity: calc(var(--dust-o) * 0.55); } to { opacity: var(--dust-o); } }
+
+/* horizon light on the dream floor */
+.nc-root .nc-horizon {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 34vh;
+  pointer-events: none;
+  background: radial-gradient(58% 100% at 50% 108%, color-mix(in srgb, var(--dream-a) 13%, transparent), transparent 72%);
+  transition: opacity 1.6s ease;
+  opacity: 0.8;
+}
+.nc-root[data-playing="true"] .nc-horizon { opacity: 1.25; }
+
+/* ── vinyl disc (player dock) ── */
+.nc-root .nc-vinyl { position: relative; }
+.nc-root .nc-vinyl-disc {
+  position: absolute; inset: 0; border-radius: 9999px;
+  background:
+    repeating-radial-gradient(circle at center, #101014 0 1.6px, #1b1b22 1.6px 3.2px),
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.12), transparent 55%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 3px 14px rgba(0, 0, 0, 0.55);
+  animation: nc-spin 6.5s linear infinite;
+  animation-play-state: paused;
+}
+.nc-root .nc-vinyl[data-spin="true"] .nc-vinyl-disc { animation-play-state: running; }
+.nc-root .nc-vinyl-sheen {
+  position: absolute; inset: 0; border-radius: 9999px; pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, transparent 38%, transparent 62%, rgba(255, 255, 255, 0.07) 100%);
+  mix-blend-mode: screen;
+}
+.nc-root .nc-vinyl-hole {
+  position: absolute; inset: 45.5%; border-radius: 9999px; z-index: 2;
+  background: var(--bg); box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.45);
+}
+
+/* ── orbit halo (now playing cover) ── */
+.nc-root .nc-halo {
+  position: absolute; inset: -7%;
+  border-radius: 9999px;
+  border: 1.5px dashed color-mix(in srgb, var(--accent) 38%, transparent);
+  animation: nc-spin 44s linear infinite;
+  -webkit-mask-image: radial-gradient(circle, transparent 58%, black 60%);
+  mask-image: radial-gradient(circle, transparent 58%, black 60%);
+  pointer-events: none;
+}
+.nc-root .nc-halo::before, .nc-root .nc-halo::after {
+  content: ""; position: absolute; width: 7px; height: 7px; border-radius: 9999px;
+  background: var(--accent);
+  box-shadow: 0 0 12px 2px color-mix(in srgb, var(--accent) 60%, transparent);
+  top: 50%; margin-top: -3.5px;
+}
+.nc-root .nc-halo::before { left: -3px; }
+.nc-root .nc-halo::after { right: -3px; }
+
+/* ── play-pulse ring ── */
+.nc-root .np-play { position: relative; }
+.nc-root .np-play::after {
+  content: ""; position: absolute; inset: -2px; border-radius: 9999px;
+  border: 1.5px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  opacity: 0; pointer-events: none;
+}
+.nc-root .np-play[data-playing="true"]::after { animation: nc-ring 2.3s cubic-bezier(0.22, 1, 0.36, 1) infinite; }
+@keyframes nc-ring {
+  0% { transform: scale(1); opacity: 0.55; }
+  70%, 100% { transform: scale(1.45); opacity: 0; }
+}
+
+/* ── track-row sheen sweep ── */
+.nc-root .nc-row { position: relative; overflow: hidden; }
+.nc-root .nc-row::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 32%, rgba(255, 255, 255, 0.05) 50%, transparent 68%);
+  transform: translateX(-130%);
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nc-root .nc-row:hover::after { transform: translateX(130%); }
+
+/* current-row glow bar */
+.nc-root .nc-row-bar {
+  position: absolute; inset-inline-start: 0; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 58%; border-radius: 9999px;
+  background: linear-gradient(180deg, transparent, var(--accent), transparent);
+  box-shadow: 0 0 12px 1px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+/* top mist — content dissolves toward the floating islands */
+.nc-root .nc-mist {
+  pointer-events: none;
+  position: absolute; inset-inline: 0; top: 0; height: 84px; z-index: 20;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 88%, transparent) 8%, transparent 100%);
+}
+
+/* dream slider — glowing head */
+.nc-root .dream-slider [data-slider] > div > div {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 65%, transparent), var(--accent)) !important;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.nc-root .dream-slider [data-slider] > div:nth-child(2) {
+  background: var(--fg);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent), 0 0 14px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+/* brand tile breathing light while music plays */
+.nc-root .nc-brand-glow {
+  position: absolute; inset: -3px; border-radius: inherit; pointer-events: none;
+  background: var(--accent); opacity: 0; filter: blur(10px); transition: opacity 1.4s ease;
+}
+.nc-root[data-playing="true"] .nc-brand-glow { opacity: 0.4; animation: nc-pulse-soft 3.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nc-root .nc-dream-blob, .nc-root .nc-dust, .nc-root .nc-dust2,
+  .nc-root .nc-vinyl-disc, .nc-root .nc-halo, .nc-root .np-play[data-playing="true"]::after,
+  .nc-root .nc-brand-glow { animation: none !important; }
+  .nc-root .nc-row::after { transition: none; }
+}
+
+/* karaoke lyric clamp — long lines wrap or clamp to 2 lines with ellipsis, never mid-word hard cut */
+.nc-root .lyric-line {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* range-less custom slider thumb focus */
+.nc-root .slider-hit { touch-action: none; }
+.nc-root .slider-hit:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+
+.nc-root button:focus-visible, .nc-root [role="button"]:focus-visible, .nc-root a:focus-visible, .nc-root input:focus-visible, .nc-root select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.nc-root input[type="text"], .nc-root input[type="search"], .nc-root input[type="email"] {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  color: var(--fg);
+  border-radius: 10px;
+  transition: border-color 0.2s;
+}
+.nc-root input::placeholder { color: var(--faint); }
+.nc-root input:focus { border-color: var(--line2); outline: none; }
+
+.nc-root select {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  color: var(--fg);
+  border-radius: 10px;
+}
+
+/* switch */
+.nc-root .switch {
+  width: 40px; height: 22px; border-radius: 999px;
+  background: var(--bg2); border: 1px solid var(--line2);
+  position: relative; transition: background 0.25s;
+  flex-shrink: 0;
+}
+.nc-root .switch[data-on="true"] { background: var(--accent); border-color: var(--accent); }
+.nc-root .switch::after {
+  content: ""; position: absolute; top: 2px;
+  inset-inline-start: 2px;
+  width: 16px; height: 16px; border-radius: 999px;
+  background: var(--fg);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nc-root .switch[data-on="true"]::after {
+  transform: translateX(18px);
+  background: var(--on-accent);
+}
+.nc-root[dir="rtl"] .switch[data-on="true"]::after { transform: translateX(-18px); }
+
+/* settings range inputs */
+.nc-root .nobody-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line);
+  outline-offset: 4px;
+}
+.nc-root .nobody-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px; border-radius: 999px;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+  box-shadow: 0 1px 6px rgba(0,0,0,.4);
+}
+.nc-root .nobody-range::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 999px;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+}
+
+/* vinyl disc */
+.nc-root .vinyl-ring {
+  background:
+    repeating-radial-gradient(circle at center, transparent 0 3px, rgba(0,0,0,0.22) 3px 4px),
+    radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 60%);
+}
+
+/* paused visualizer keeps animating gently; when tab hidden the rAF stops entirely */
+
+/* ────────────────────────────────────────────────────────────────────────────
+   UI-SWITCH VEIL — lives OUTSIDE .nc-root (covers the whole window during the
+   classic ⇄ cinema transition), so it carries its own self-contained palette.
+   ──────────────────────────────────────────────────────────────────────────── */
+.nc-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(120% 90% at 50% 110%, #17131f 0%, #0a0a0d 58%),
+    #0a0a0d;
+}
+.nc-veil-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+.nc-veil-blob.a {
+  width: 44vmax; height: 44vmax; top: -18vmax; inset-inline-start: -12vmax;
+  background: radial-gradient(circle at 35% 35%, rgba(227, 177, 98, 0.34), transparent 66%);
+  animation: nc-veil-drift 11s ease-in-out infinite alternate;
+}
+.nc-veil-blob.b {
+  width: 36vmax; height: 36vmax; bottom: -16vmax; inset-inline-end: -10vmax;
+  background: radial-gradient(circle at 55% 45%, rgba(227, 99, 143, 0.2), transparent 64%);
+  animation: nc-veil-drift 14s ease-in-out infinite alternate-reverse;
+}
+.nc-veil-blob.c {
+  width: 30vmax; height: 30vmax; top: 30%; inset-inline-end: 18%;
+  background: radial-gradient(circle at 50% 50%, rgba(143, 99, 227, 0.16), transparent 62%);
+  animation: nc-veil-drift 17s ease-in-out infinite alternate;
+}
+@keyframes nc-veil-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(6vmax, 5vmax, 0) scale(1.18); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nc-veil-blob { animation: none; }
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   LYRICS — rêve edition
+   Full-bleed stage with breathing fade masks + the karaoke accent-fill.
+   ──────────────────────────────────────────────────────────────────────────── */
+.nc-root .nc-lyrics-scroll {
+  mask-image: linear-gradient(180deg, transparent 0, #000 12%, #000 84%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 12%, #000 84%, transparent 100%);
+}
+.nc-root .lyr-fill {
+  --fill: 0;
+  /* cover-palette pour: the sung region fills c1 → c2 (the track's REAL cover
+     colors, set as --lyr-c1/--lyr-c2 on .nc-lyrics-scroll by LyricsView; falls
+     back to the accent), and a 1px near-white spike rides the frontier like a
+     glowing playhead. Gradient repaint only — zero layout-affecting animation. */
+  background: linear-gradient(
+    90deg,
+    var(--lyr-c1, var(--accent)) 0%,
+    var(--lyr-c2, var(--accent)) calc(var(--fill) * 100% - 1px),
+    color-mix(in srgb, #fff 78%, var(--lyr-c2, var(--accent))) calc(var(--fill) * 100% - 1px),
+    var(--lyr-c2, var(--accent)) calc(var(--fill) * 100%),
+    color-mix(in srgb, var(--fg) 26%, transparent) calc(var(--fill) * 100%)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--lyr-c1, var(--accent)) 30%, transparent));
+}
+.nc-root[dir="rtl"] .lyr-fill {
+  background: linear-gradient(
+    to left,
+    var(--lyr-c1, var(--accent)) 0%,
+    var(--lyr-c2, var(--accent)) calc(var(--fill) * 100% - 1px),
+    color-mix(in srgb, #fff 78%, var(--lyr-c2, var(--accent))) calc(var(--fill) * 100% - 1px),
+    var(--lyr-c2, var(--accent)) calc(var(--fill) * 100%),
+    color-mix(in srgb, var(--fg) 26%, transparent) calc(var(--fill) * 100%)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* vertical EQ sliders (Fx sheet) */
+.nc-root .nc-vert-range {
+  writing-mode: vertical-lr;
+  direction: rtl; /* min at the bottom */
+  width: 22px;
+  height: 92px;
+  accent-color: var(--accent);
+}
+
+/* ── Now-Playing stage open → shed background paint work ──
+   The overlay is fully opaque and carries its own brighter dream, so the
+   app-level aurora + player dock below it can stop compositing entirely. */
+.nc-root[data-np="true"] > .nc-dream { display: none; }
+.nc-root[data-np="true"] .nc-playerbar { display: none; }
+.nc-root[data-np="true"] .nc-mist { display: none; }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   SHARED THEMED DROPDOWN (nb-select) — replaces native <select> everywhere.
+   Native dropdown popups are OS-drawn (read as "Windows" inside NOBODY).
+   This one is fully app-drawn and adapts to whichever root it sits in via
+   the CSS variables that cinema / EELA / ALOK all define.
+   ════════════════════════════════════════════════════════════════════════════ */
+.nb-select { position: relative; }
+.nb-select-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px 6px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  color: var(--mut, inherit);
+  background: transparent;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+.nb-select-trigger:hover,
+.nb-select-trigger[aria-expanded="true"] { color: var(--fg, inherit); }
+.nb-select-value { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.nb-select-chevron { flex: none; opacity: 0.6; transition: rotate 0.2s ease, opacity 0.2s ease; }
+.nb-select-chevron[data-open="true"] { rotate: 180deg; opacity: 1; }
+
+.nb-select-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  inset-inline-start: 0;
+  z-index: 80;
+  min-width: max(100%, 170px);
+  max-height: min(320px, 48vh);
+  overflow-y: auto;
+  padding: 5px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--card, #fff) 88%, transparent);
+  border: 1px solid var(--line, rgba(0, 0, 0, 0.1));
+  box-shadow: 0 18px 48px -12px rgba(0, 0, 0, 0.35), 0 2px 10px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  animation: nb-select-in 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nb-select-menu.nb-select-up { top: auto; bottom: calc(100% + 6px); }
+@keyframes nb-select-in {
+  from { opacity: 0; translate: 0 -4px; }
+  to { opacity: 1; translate: 0 0; }
+}
+.nb-select-option {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 7px 9px;
+  border-radius: 9px;
+  font-size: 12.5px;
+  color: var(--mut, inherit);
+  text-align: start;
+  white-space: nowrap;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+.nb-select-option[data-cursor-active="true"] {
+  background: color-mix(in srgb, var(--accent, #888) 12%, transparent);
+  color: var(--fg, inherit);
+}
+.nb-select-option[aria-selected="true"] { color: var(--fg, inherit); font-weight: 600; }
+.nb-select-check {
+  display: inline-flex;
+  width: 14px;
+  justify-content: center;
+  color: var(--accent, currentColor);
+  flex: none;
+}
+.nb-select-label { overflow: hidden; text-overflow: ellipsis; }
+
+/* ── Library group-by (B2) ────────────────────────────────────────────────────
+   Group headers for artist / album / folder browsing reuse the rêve glass
+   language: a pill with accent tint, display-italic title, hairline rule and
+   an accent play chip. The selector pill matches the sort control. RTL-safe
+   via logical properties / symmetric padding. */
+
+.nc-root .nc-select-pill { border-radius: 999px; }
+
+/* outer spacing wrapper — padding (not margins) so the virtualizer measures it */
+.nc-root .nc-group-head { padding: 16px 3px 6px; }
+
+.nc-root .nc-group-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 7%, color-mix(in srgb, var(--card) 66%, transparent)),
+    color-mix(in srgb, var(--bg2) 52%, transparent)
+  );
+  box-shadow: inset 0 1px 0 var(--glass-hi);
+}
+.nc-root .nc-group-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--accent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nc-root .nc-group-rule {
+  height: 1px;
+  flex: 1 1 12px;
+  min-width: 12px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 40%, transparent), transparent);
+}
+.nc-root .nc-group-meta {
+  flex: none;
+  font-size: 11px;
+  color: var(--faint);
+  white-space: nowrap;
+}
+.nc-root .nc-group-play {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  flex: none;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+  transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+.nc-root .nc-group-play:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+  transform: scale(1.07);
+}
+.nc-root .nc-group-play:active { transform: scale(0.96); }
+.nc-root .nc-group-play:disabled { opacity: 0.5; cursor: default; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nc-root .nc-group-play { transition: none; }
+  .nc-root .nc-group-play:hover,
+  .nc-root .nc-group-play:active { transform: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   V1.2.0 LIBRARY TILES (task 24-a) — cinematic square category board.
+   Each tile (button.nc-cat / div.nc-cat[role=button]) carries data-cat:
+   · .nc-cat-grad  = ambient gradient hue-rotated per category FROM the live
+     --accent (pure CSS → the whole board re-harmonizes instantly when the
+     dynamic accent-from-cover theme moves).
+   · .nc-cat-media = masked ambient cover art, .nc-cat-ghost = icon fallback.
+   · .nc-cat-badge = frosted icon badge (top-start), .nc-cat-chips = dark
+     glass chips (bottom-start) — the reference look.
+   · .nc-cat-line  = accent hairline that breathes while music plays.
+   ════════════════════════════════════════════════════════════════════════════ */
+.nc-root .nc-cat {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 28px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  text-align: start;
+  box-shadow: 0 18px 44px -22px rgba(0, 0, 0, 0.55);
+  transition: border-color 0.3s ease, box-shadow 0.35s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.nc-root .nc-cat.sm { border-radius: 20px; }
+
+/* per-category recipes — hue / glow anchor / extra saturation */
+.nc-root .nc-cat[data-cat="songs"]        { --tile-hue: 0deg;   --tile-gx: 80%; --tile-gy: -6%; }
+.nc-root .nc-cat[data-cat="folders"]      { --tile-hue: -14deg; --tile-gx: 18%; --tile-gy: -10%; --tile-sat: 1.05; }
+.nc-root .nc-cat[data-cat="subfolders"]   { --tile-hue: 34deg;  --tile-gx: 88%; --tile-gy: 108%; }
+.nc-root .nc-cat[data-cat="albums"]       { --tile-hue: -60deg; --tile-gx: 76%; --tile-gy: -8%; }
+.nc-root .nc-cat[data-cat="albumArtists"] { --tile-hue: 225deg; --tile-gx: 24%; --tile-gy: -12%; --tile-sat: 1.04; }
+.nc-root .nc-cat[data-cat="artists"]      { --tile-hue: -30deg; --tile-gx: 50%; --tile-gy: -30%; }
+.nc-root .nc-cat[data-cat="years"]        { --tile-hue: 120deg; --tile-gx: 84%; --tile-gy: -4%; --tile-sat: 1.08; }
+.nc-root .nc-cat[data-cat="queue"]        { --tile-hue: 95deg;  --tile-gx: 12%; --tile-gy: -8%; }
+.nc-root .nc-cat[data-cat="mostPlayed"]   { --tile-hue: -85deg; --tile-gx: 82%; --tile-gy: 110%; }
+.nc-root .nc-cat[data-cat="longest"]      { --tile-hue: 150deg; --tile-gx: 20%; --tile-gy: -6%; --tile-sat: 1.06; }
+.nc-root .nc-cat[data-cat="favorites"]    { --tile-hue: -45deg; --tile-gx: 78%; --tile-gy: -6%; }
+
+.nc-root .nc-cat-grad {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 86% at var(--tile-gx, 82%) var(--tile-gy, -4%), color-mix(in srgb, var(--accent) 30%, transparent), transparent 62%),
+    radial-gradient(140% 110% at 6% 112%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 56%),
+    linear-gradient(168deg, color-mix(in srgb, var(--card) 82%, transparent), color-mix(in srgb, var(--bg2) 94%, transparent) 56%, color-mix(in srgb, #05050a 42%, var(--bg2)) 100%);
+  filter: hue-rotate(var(--tile-hue, 0deg)) saturate(var(--tile-sat, 1.12));
+  transition: background 0.45s ease;
+}
+.nc-root[data-theme="light"] .nc-cat-grad {
+  background:
+    radial-gradient(120% 86% at var(--tile-gx, 82%) var(--tile-gy, -4%), color-mix(in srgb, var(--accent) 24%, transparent), transparent 62%),
+    radial-gradient(140% 110% at 6% 112%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 56%),
+    linear-gradient(168deg, color-mix(in srgb, var(--card) 94%, transparent), color-mix(in srgb, var(--bg2) 96%, transparent) 58%, color-mix(in srgb, var(--accent) 9%, var(--bg2)) 100%);
+}
+
+/* ambient cover art, masked so it glows out of the upper corner */
+.nc-root .nc-cat-media {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+  opacity: 0.92;
+  transform: scale(1.01);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  -webkit-mask-image: radial-gradient(115% 85% at 76% 26%, #000 28%, transparent 72%);
+  mask-image: radial-gradient(115% 85% at 76% 26%, #000 28%, transparent 72%);
+}
+.nc-root .nc-cat:hover .nc-cat-media { transform: scale(1.07) translateY(-2px); }
+
+/* icon fallback when a category has no real cover art yet */
+.nc-root .nc-cat-ghost {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: auto;
+  width: 34%;
+  height: 34%;
+  pointer-events: none;
+  color: color-mix(in srgb, var(--accent) 58%, transparent);
+  opacity: 0.6;
+  filter: drop-shadow(0 12px 26px color-mix(in srgb, var(--accent) 26%, transparent));
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nc-root .nc-cat.sm .nc-cat-ghost { width: 30%; height: 30%; }
+.nc-root .nc-cat:hover .nc-cat-ghost { transform: scale(1.07) rotate(-4deg); }
+
+/* readability scrim under the chips */
+.nc-root .nc-cat-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(6, 6, 10, 0) 32%, rgba(6, 6, 10, 0.34) 62%, rgba(6, 6, 10, 0.72) 100%);
+}
+
+/* inner sheen + floor vignette */
+.nc-root .nc-cat::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 -34px 56px -30px rgba(0, 0, 0, 0.5);
+}
+
+/* content layer */
+.nc-root .nc-cat-content {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+}
+.nc-root .nc-cat.sm .nc-cat-content { padding: 12px; }
+.nc-root .nc-cat-spacer { flex: 1 1 auto; min-height: 8px; }
+
+/* frosted icon badge (top-start) */
+.nc-root .nc-cat-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 13px;
+  color: #fff;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  box-shadow: 0 10px 22px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), color 0.25s ease;
+}
+.nc-root .nc-cat.sm .nc-cat-badge { width: 31px; height: 31px; border-radius: 10px; }
+.nc-root .nc-cat-badge svg { transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
+.nc-root .nc-cat:hover .nc-cat-badge { transform: translateY(1px) rotate(-4deg); color: color-mix(in srgb, #fff 50%, var(--accent)); }
+.nc-root .nc-cat:hover .nc-cat-badge svg { transform: scale(1.12); }
+.nc-root[data-theme="light"] .nc-cat-badge {
+  color: var(--fg);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.38));
+  border-color: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 8px 20px -14px rgba(60, 50, 25, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+.nc-root[data-theme="light"] .nc-cat:hover .nc-cat-badge { color: var(--accent); }
+
+/* dark glass chips (bottom-start) — the reference look */
+.nc-root .nc-cat-chips {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+.nc-root .nc-cat.sm .nc-cat-chips { gap: 5px; }
+.nc-root .nc-cat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  padding: 5px 11px;
+  border-radius: 11px;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #fff;
+  background: color-mix(in srgb, #08080c 55%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(10px) saturate(1.25);
+  -webkit-backdrop-filter: blur(10px) saturate(1.25);
+  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.nc-root .nc-cat-chip.sub {
+  padding: 3.5px 9px;
+  border-radius: 9px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  background: color-mix(in srgb, #08080c 44%, transparent);
+}
+.nc-root .nc-cat.sm .nc-cat-chip { padding: 4px 9px; font-size: 11.5px; border-radius: 9px; }
+.nc-root .nc-cat.sm .nc-cat-chip.sub { padding: 3px 7px; font-size: 9.5px; }
+.nc-root[data-theme="light"] .nc-cat-chip { background: color-mix(in srgb, #14120e 52%, transparent); }
+
+/* accent hairline that breathes with playback */
+.nc-root .nc-cat-line {
+  position: absolute;
+  z-index: 5;
+  inset-inline: 16%;
+  bottom: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.3;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+.nc-root[data-playing="true"] .nc-cat-line { opacity: 0.85; }
+.nc-root .nc-cat:hover .nc-cat-line,
+.nc-root .nc-cat[data-active="true"] .nc-cat-line { opacity: 1; }
+
+/* hover: accent glow ring (the lift itself is framer-motion's job) */
+.nc-root .nc-cat:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line2));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent),
+    0 26px 60px -22px color-mix(in srgb, var(--accent) 34%, transparent),
+    0 28px 60px -26px rgba(0, 0, 0, 0.6);
+}
+/* active: the category you are / were last inside */
+.nc-root .nc-cat[data-active="true"] {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow:
+    0 0 0 1.5px color-mix(in srgb, var(--accent) 52%, transparent),
+    0 20px 50px -20px color-mix(in srgb, var(--accent) 38%, transparent),
+    0 22px 50px -24px rgba(0, 0, 0, 0.55);
+}
+.nc-root .nc-cat[data-active="true"] .nc-cat-badge { color: var(--accent); }
+.nc-root[data-theme="light"] .nc-cat[data-active="true"] .nc-cat-badge { color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .nc-root .nc-cat, .nc-root .nc-cat-badge, .nc-root .nc-cat-badge svg,
+  .nc-root .nc-cat-media, .nc-root .nc-cat-ghost { transition: none; }
+  .nc-root .nc-cat:hover .nc-cat-media,
+  .nc-root .nc-cat:hover .nc-cat-ghost,
+  .nc-root .nc-cat:hover .nc-cat-badge,
+  .nc-root .nc-cat:hover .nc-cat-badge svg { transform: none; }
+}
+
+/* hub eyebrow strip */
+.nc-root .nc-lib-eyebrow { display: flex; align-items: center; gap: 12px; }
+.nc-root .nc-lib-eyebrow-rule {
+  height: 1px;
+  flex: 1 1 12px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 30%, transparent), transparent);
+}
+
+/* breadcrumb chevrons / back arrow flip in RTL */
+.nc-root[dir="rtl"] .nc-flip { transform: scaleX(-1); }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   V1.2.0 LIBRARY HUB (task 24-a) — board & content additions
+   (complements the .nc-cat tile system above)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* keyboard focus ring for tiles (in addition to the global focus rule) */
+.nc-root .nc-cat:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 78%, transparent);
+  outline-offset: 3px;
+}
+
+/* text truncation inside the inline-flex glass chips */
+.nc-root .nc-cat-chip .nc-chip-label {
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* accent ring icon in the content-view slim headers */
+.nc-root .nc-lib-ring-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 12px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 11%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  box-shadow:
+    0 0 20px -8px color-mix(in srgb, var(--accent) 55%, transparent),
+    inset 0 1px 0 var(--glass-hi);
+}
+
+/* slim-header back pill — accent glow on hover */
+.nc-root .nc-lib-back {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+}
+.nc-root .nc-lib-back:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line2));
+  box-shadow: 0 0 18px -6px color-mix(in srgb, var(--accent) 42%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nc-root .nc-lib-back { transition: none; }
+}
+
+/* ── Task 30-dc-cinema · Download Center pieces (cinema face) ──────────────
+   Small atoms the rebuilt SmartFetchPanel needs on top of the nc-* system.
+   Everything else in the panel is Tailwind utilities + existing variables. */
+
+.nc-root .nc-dl-row {
+  position: relative;
+  border-radius: 12px;
+  transition: background 0.15s ease;
+}
+.nc-root .nc-dl-row:hover { background: color-mix(in srgb, var(--fg) 4%, transparent); }
+.nc-root .nc-dl-row[data-sel="true"] {
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+}
+
+.nc-root .nc-dl-cb {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  border: 1.5px solid var(--line2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--on-accent);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.nc-root .nc-dl-cb[data-on="true"] { background: var(--accent); border-color: var(--accent); }
+.nc-root .nc-dl-cb:hover { border-color: var(--accent); }
+
+.nc-root .nc-dl-stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--card) 55%, transparent);
+  padding: 9px 14px;
+}
+.nc-root .nc-dl-stat strong { font-size: 17px; font-weight: 700; line-height: 1; }
+.nc-root .nc-dl-stat span { font-size: 10.5px; color: var(--mut); line-height: 1.25; }
+
+.nc-root .nc-dl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 10.5px;
+  color: var(--mut);
+  white-space: nowrap;
+  transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.nc-root .nc-dl-chip b { font-size: 10px; font-weight: 700; color: var(--faint); }
+.nc-root .nc-dl-chip:hover { color: var(--fg); border-color: var(--line2); }
+.nc-root .nc-dl-chip[data-active="true"] {
+  color: var(--fg);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.nc-root .nc-dl-chip[data-active="true"] b { color: var(--accent); }
+
+.nc-root .nc-dl-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--faint);
+}
+.nc-root .nc-dl-status[data-tone="ok"] { color: var(--accent); }
+.nc-root .nc-dl-status[data-tone="warn"] { color: #e5484d; }
+.nc-root .nc-dl-status[data-tone="busy"] { color: var(--mut); }
+
+.nc-root .nc-dl-badge {
+  font-style: normal;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: 1px solid var(--line2);
+  border-radius: 999px;
+  padding: 1px 6px;
+  color: var(--mut);
+  white-space: nowrap;
+}
+.nc-root .nc-dl-badge[data-tone="ok"] {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.nc-root .nc-dl-badge[data-tone="info"] { color: var(--fg); }
+
+.nc-root .nc-dl-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  inset-inline-end: 0;
+  z-index: 40;
+  min-width: 250px;
+  padding: 6px;
+  border: 1px solid var(--line2);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--card, #fff) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: 0 18px 48px -12px rgba(0, 0, 0, 0.35), 0 2px 10px rgba(0, 0, 0, 0.12);
+  animation: nb-select-in 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nc-root .nc-dl-optrow {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-radius: 10px;
+  padding: 9px 10px;
+  text-align: start;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.nc-root .nc-dl-optrow:hover { background: color-mix(in srgb, var(--fg) 6%, transparent); }
+.nc-root .nc-dl-optrow small {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--faint);
+}
+
+.nc-root .nc-dl-cover-cell {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.nc-root .nc-dl-cover-cell:hover { transform: translateY(-2px); }
+.nc-root .nc-dl-cover-cell[data-picked="true"] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.nc-root .nc-spin { animation: nc-spin-fast 0.9s linear infinite; }
+@keyframes nc-spin-fast { to { transform: rotate(360deg); } }
+
+.nc-root .nc-dl-iconbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  padding: 5px;
+  color: var(--mut);
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.nc-root .nc-dl-iconbtn:hover { background: var(--card2); color: var(--fg); }
+.nc-root .nc-dl-iconbtn:disabled { opacity: 0.35; cursor: default; }
+.nc-root .nc-dl-iconbtn[data-tone="ok"]:hover { color: var(--accent); }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   Task 30 — MANAGED FOLDERS board (nc-fm-*)
+   The Folders category renders each managed folder (bridge list ∪ mirror
+   folders) as a glass chip-card: folder icon + name + track-count chip +
+   rescan (↻) / remove (✕) icon buttons, plus a dashed "Add folder" chip at
+   the end of the grid. Logical properties only — RTL-safe by construction.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.nc-root .nc-fm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(252px, 1fr));
+  gap: 10px;
+}
+
+.nc-root .nc-fm-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--line2);
+  background: color-mix(in srgb, var(--card, #fff) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  text-align: start;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, opacity 0.18s ease;
+}
+.nc-root .nc-fm-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 38%, var(--line2));
+  box-shadow: 0 14px 34px -18px color-mix(in srgb, var(--accent) 30%, transparent);
+  transform: translateY(-2px);
+}
+.nc-root .nc-fm-card[data-busy="true"] { opacity: 0.72; }
+
+.nc-root .nc-fm-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: start;
+}
+.nc-root .nc-fm-main:not(:disabled):hover .nc-fm-name { color: var(--accent); }
+.nc-root .nc-fm-main:disabled { cursor: default; }
+
+.nc-root .nc-fm-icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.nc-root .nc-fm-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.nc-root .nc-fm-name {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+.nc-root .nc-fm-path {
+  font-size: 10px;
+  color: var(--faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  unicode-bidi: plaintext;
+}
+
+.nc-root .nc-fm-count { flex: none; max-width: 100%; }
+
+.nc-root .nc-fm-acts {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+.nc-root .nc-fm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  color: var(--mut);
+  border: 1px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.nc-root .nc-fm-btn:hover:not(:disabled) {
+  background: var(--card2);
+  color: var(--fg);
+}
+.nc-root .nc-fm-btn:disabled { opacity: 0.4; cursor: default; }
+.nc-root .nc-fm-btn:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 78%, transparent);
+  outline-offset: 2px;
+}
+/* armed two-tap confirm — the ✕ becomes a danger "confirm?" pill */
+.nc-root .nc-fm-btn[data-danger="true"] {
+  width: auto;
+  padding-inline: 8px;
+  color: #ff6b6b;
+  border-color: color-mix(in srgb, #ff6b6b 45%, transparent);
+  background: color-mix(in srgb, #ff6b6b 12%, transparent);
+  font-size: 11px;
+  font-weight: 700;
+}
+.nc-root .nc-fm-btn[data-danger="true"]:hover:not(:disabled) { color: #ff5252; }
+.nc-root .nc-fm-sure { white-space: nowrap; }
+
+.nc-root .nc-fm-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 10px 16px;
+  border-radius: 16px;
+  border: 1.5px dashed color-mix(in srgb, var(--fg) 20%, var(--line2));
+  color: var(--mut);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.nc-root .nc-fm-add:hover:not(:disabled) {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+.nc-root .nc-fm-add:disabled { opacity: 0.5; cursor: default; }
+.nc-root .nc-fm-add:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 78%, transparent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nc-root .nc-fm-card,
+  .nc-root .nc-fm-card:hover,
+  .nc-root .nc-fm-add,
+  .nc-root .nc-fm-btn { transition: none; transform: none; }
+}
+
+/* ── task 41 · artist covers (ARTISTS board fetch button + tile art) ────────── */
+
+/* Header glass chip — lives in the existing library header action row and
+   inherits the shared .glass chip + Tailwind chip classes from the JSX; this
+   block only adds the disabled/progress + focus states. Uses logical props
+   so RTL mirrors for free. */
+.nc-root .nc-ar-fetch:disabled {
+  opacity: 0.55;
+  cursor: default;
+  transform: none; /* suppress the hover lift while the batch is running */
+}
+.nc-root .nc-ar-fetch:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 78%, transparent);
+  outline-offset: 2px;
+}
+
+/* The stored artist cover painted inside the tile's ambient media layer —
+   same masking/hover handled by .nc-cat-media, this just makes the img fill
+   the square with a center crop. */
+.nc-root .nc-cat-media .nc-ar-art {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: center 22%; /* faces/lettering usually sit above center */
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nc-root .nc-ar-fetch {
+    transition: none;
+    transform: none;
+  }
+  .nc-root .nc-ar-fetch:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nobody • Luxury Desktop Music Player by EPODONIOS</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ef4c78'/%3E%3Cstop offset='100%25' stop-color='%236542d8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='2' y='2' width='36' height='36' rx='9' fill='%230b090f'/%3E%3Crect x='2.5' y='2.5' width='35' height='35' rx='8.5' stroke='url(%23g)' stroke-width='1.5' fill='none'/%3E%3Cpath d='M13 28V12L27 28V12' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Ccircle cx='27' cy='12' r='2.2' fill='%23ef4c78'/%3E%3C/svg%3E" />
+    <!-- PHASE-4 PERF FIX: all fonts are now SELF-HOSTED (public/fonts/google)
+         — 40 families / 214 @font-face rules, zero network requests, instant
+         offline startup. The old render-blocking Google css2 stylesheet hung
+         startup until a network timeout when offline and re-fetched families
+         at runtime for artist name presets. -->
+    <link rel="stylesheet" href="/fonts/google-fonts.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,107 @@
+{
+  "name": "react-vite-tailwind",
+  "private": true,
+  "version": "1.5.1",
+  "description": "Nobody is a premium desktop audio player featuring real-time LRC lyric synchronization, automatic folder scanning, cover-driven dynamic theming, compact mini-player mode and multi-language support by EPODONIOS.",
+  "author": "EPODONIOS",
+  "main": "electron/main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "electron:dev": "vite & electron .",
+    "electron:start": "bun run build && electron .",
+    "electron:dist": "bun run build && electron-builder --win nsis msi"
+  },
+  "build": {
+    "appId": "com.epodonios.nobody",
+    "productName": "NOBODY",
+    "copyright": "© 2026 EPODONIOS",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**",
+      "electron/**"
+    ],
+    "asar": true,
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "msi",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "NOBODY-Setup-${version}.${ext}",
+      "shortcutName": "NOBODY"
+    },
+    "msi": {
+      "artifactName": "NOBODY-${version}.${ext}"
+    },
+    "linux": {
+      "icon": "build/icon.png",
+      "category": "Audio",
+      "target": [
+        "AppImage"
+      ]
+    },
+    "portable": {
+      "artifactName": "NOBODY-Portable-${version}.${ext}",
+      "requestExecutionLevel": "user"
+    },
+    "electronLanguages": [
+      "en-US"
+    ]
+  },
+  "dependencies": {
+    "@fontsource-variable/fraunces": "5.3.0",
+    "@tanstack/react-virtual": "3.14.10",
+    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/cli": "^2.11.4",
+    "@tauri-apps/plugin-dialog": "^2.7.2",
+    "@tauri-apps/plugin-fs": "^2.5.1",
+    "@tauri-apps/plugin-http": "^2.5.9",
+    "@tauri-apps/plugin-shell": "^2.3.5",
+    "clsx": "2.1.1",
+    "framer-motion": "13.2.0",
+    "lucide-react": "1.41.0",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "tailwind-merge": "3.4.0",
+    "zustand": "5.0.15"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "4.1.17",
+    "@types/node": "22.19.17",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "5.1.1",
+    "electron": "^41.7.1",
+    "electron-builder": "^26.15.3",
+    "tailwindcss": "4.1.17",
+    "typescript": "5.9.3",
+    "vite": "7.3.2",
+    "vite-plugin-singlefile": "2.3.0"
+  }
+}
